@@ -5,6 +5,7 @@ import { Stage, Layer, Text, Rect, Group, Path } from 'react-konva';
 import { graphlib, layout } from 'dagre';
 import _ from 'lodash';
 import { isGroup } from './contants';
+import { getPathData } from './util';
 
 type Node = {
   id: string;
@@ -46,6 +47,7 @@ export default class Dag extends React.Component<Props, State> {
     this.graph
       .setGraph({
         rankdir: 'LR',
+        edgesep: 40,
       })
       .setDefaultEdgeLabel(function () {
         return {};
@@ -127,16 +129,15 @@ export default class Dag extends React.Component<Props, State> {
                 })}
                 {this.graph.edges().map((e) => {
                   const edge = this.graph.edge(e);
-                  const data = `M${edge.points[0].x} ${edge.points[0].y} L${edge.points
-                    .slice(1, edge.points.length)
-                    .reduce((total, cur) => {
-                      return `${total}${cur.x} ${cur.y} `;
-                    }, '')}`;
-                  console.log(edge, data);
-                  // <Line key={e.v + e.w} points={points} stroke="red" />;
-                  return <Path data={data} key={e.v + e.w} stroke="#04c0c7" strokeWidth={4} />;
+                  return (
+                    <Path
+                      data={getPathData(edge.points)}
+                      key={e.v + e.w}
+                      stroke="#04c0c7"
+                      strokeWidth={4}
+                    />
+                  );
                 })}
-                <Path data={'M150 25 C175 25 200 25'} fill={'red'} stroke={'red'} strokeWidth={2} />
               </Layer>
             </Stage>
           </div>

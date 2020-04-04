@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text } from 'react-konva';
+import { curveBasis, line } from 'd3-shape';
 
 const canvas = document.createElement('canvas');
 canvas.width = 300;
@@ -95,5 +96,15 @@ export const fittingString = function fittingString(
   }
   return str;
 };
-
-export function getPath(points: { x: number; y: number }[]): string {}
+export const lineGenerator = line()
+  .x(function (d) {
+    return d[0];
+  })
+  .y(function (d) {
+    return d[1];
+  });
+export function getPathData(points: { x: number; y: number }[]): string {
+  // TODO 加缓存？
+  const data = lineGenerator.curve(curveBasis)(points.map((item) => [item.x, item.y]));
+  return data!;
+}
