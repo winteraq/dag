@@ -1,10 +1,32 @@
 import './styles.css';
 import Measure from 'react-measure';
 import * as React from 'react';
-import { Stage, Layer, Text } from 'react-konva';
-export type Props = { text: string };
+import { Stage, Layer, Text, Rect, Group, Path } from 'react-konva';
+import { graphlib, layout } from 'dagre';
+import _ from 'lodash';
+import { isGroup } from './contants';
 
-export default class Dag extends React.Component<Props> {
+type Node = {
+  id: string;
+  [key: string]: any;
+  extra?: any;
+};
+type Edge = { start: string; end: string; extra?: any; [key: string]: any };
+type Props = {
+  text: string;
+  edges: Edge[];
+  nodes: Node[];
+  groupBy?: string;
+};
+
+type State = {
+  dimensions: {
+    width: number;
+    height: number;
+  };
+};
+
+export default class Dag extends React.Component<Props, State> {
   state = {
     dimensions: {
       width: 0,
@@ -12,14 +34,60 @@ export default class Dag extends React.Component<Props> {
     },
   };
 
+  graph: graphlib.Graph<Node>;
+
+  constructor(props: Props) {
+    super(props);
+    this.setGraph(props.nodes, props.edges, props.groupBy);
+  }
+
+  setGraph(nodes: Node[], edges: Edge[], groupBy?: string) {
+    this.graph = new graphlib.Graph<Node>({ multigraph: true, compound: !!groupBy });
+    this.graph
+      .setGraph({
+        rankdir: 'LR',
+      })
+      .setDefaultEdgeLabel(function () {
+        return {};
+      });
+    nodes.forEach((node) => {
+      this.graph.setNode(node.id, { label: node.id, width: 158, height: 28, ...node });
+    });
+    edges.forEach((edge: Edge) => {
+      this.graph.setEdge(edge.start, edge.end, { ...edge });
+    });
+    if (groupBy) {
+      const res = _.groupBy(nodes, groupBy);
+      Object.keys(res).forEach((key) => {
+        const groupId = `$group_${key}$`;
+        this.graph.setNode(groupId, { label: key, [isGroup]: true });
+        res[key].forEach((node) => {
+          this.graph.setParent(node.id, groupId);
+        });
+      });
+    }
+    layout(this.graph);
+  }
+
+  shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>) {
+    if (this.props === nextProps && this.state === nextState) {
+      return false;
+    }
+    if (this.props.nodes !== nextProps.nodes || this.props.edges !== nextProps.edges) {
+      this.setGraph(nextProps.nodes, nextProps.edges, nextProps.groupBy);
+    }
+    return true;
+  }
+
   render() {
+    console.log('xxx');
     const { text } = this.props;
     const { dimensions } = this.state;
     return (
       <Measure
         bounds
         onResize={(contentRect) => {
-          this.setState({ dimensions: contentRect.bounds });
+          this.setState({ dimensions: contentRect.bounds || { width: 0, height: 0 } });
         }}
       >
         {({ measureRef }) => (
@@ -27,6 +95,48 @@ export default class Dag extends React.Component<Props> {
             <Stage width={dimensions.width} height={dimensions.height}>
               <Layer>
                 <Text text={text} />
+                {this.graph.nodes().map((v) => {
+                  const node = this.graph.node(v);
+                  console.log(node);
+                  // @ts-ignore
+                  if (node[isGroup]) {
+                    return (
+                      <Group key={v} x={node.x - node.width / 2} y={node.y - node.height / 2}>
+                        <Rect
+                          dash={[4, 4]}
+                          stroke={'#222222'}
+                          strokeWidth={1}
+                          width={node.width}
+                          height={node.height}
+                        />
+                      </Group>
+                    );
+                  }
+                  return (
+                    <Group key={v} x={node.x - node.width / 2} y={node.y - node.height / 2}>
+                      <Rect
+                        fill={'red'}
+                        stroke={'blue'}
+                        strokeWidth={2}
+                        width={node.width}
+                        height={node.height}
+                      />
+                      <Text text={node.label} />
+                    </Group>
+                  );
+                })}
+                {this.graph.edges().map((e) => {
+                  const edge = this.graph.edge(e);
+                  const data = `M${edge.points[0].x} ${edge.points[0].y} L${edge.points
+                    .slice(1, edge.points.length)
+                    .reduce((total, cur) => {
+                      return `${total}${cur.x} ${cur.y} `;
+                    }, '')}`;
+                  console.log(edge, data);
+                  // <Line key={e.v + e.w} points={points} stroke="red" />;
+                  return <Path data={data} key={e.v + e.w} stroke="#04c0c7" strokeWidth={4} />;
+                })}
+                <Path data={'M150 25 C175 25 200 25'} fill={'red'} stroke={'red'} strokeWidth={2} />
               </Layer>
             </Stage>
           </div>
