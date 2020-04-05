@@ -48,8 +48,8 @@ export const DagNode: React.FC<{
         <Group>
           <Rect
             cornerRadius={getTheme().nodeBorderRadio}
-            fill={getTheme(`secondaryBg`)}
-            stroke={getTheme(`secondaryBorder`)}
+            fill={'#FFFFFF'}
+            stroke={getTheme(`${node.$state$}Border`)}
             strokeWidth={1.5}
             width={node.width}
             height={getTheme().nodeHeight * ((node.columns?.length || 0) + 1)}

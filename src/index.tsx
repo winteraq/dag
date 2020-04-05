@@ -89,13 +89,20 @@ export default class Dag extends React.Component<Props, State> {
     edges.forEach((edge: Edge, index) => {
       if (activeNode) {
         if (edge.start === activeNode.id || edge.end === activeNode.id) {
-          $state$ = 'active';
-          const startNode = this.graph.node(edge.start);
-          const endNode = this.graph.node(edge.end);
-          this.graph.setNode(startNode.id, { ...startNode, $state$ });
-          this.graph.setNode(endNode.id, { ...endNode, $state$ });
-          this.graph.setEdge(edge.start, edge.end, { ...edge, $state$: '' }, `${index}`);
-          return;
+          if (
+            (type === 'column' &&
+              ((edge.start === activeNode.id && edge.startCol === activeNode.columnId) ||
+                (edge.end === activeNode.id && edge.endCol === activeNode.columnId))) ||
+            type !== 'column'
+          ) {
+            $state$ = 'active';
+            const startNode = this.graph.node(edge.start);
+            const endNode = this.graph.node(edge.end);
+            this.graph.setNode(startNode.id, { ...startNode, $state$ });
+            this.graph.setNode(endNode.id, { ...endNode, $state$ });
+            this.graph.setEdge(edge.start, edge.end, { ...edge, $state$: '' }, `${index}`);
+            return;
+          }
         }
         this.graph.setEdge(edge.start, edge.end, { ...edge, $state$: 'disable' }, `${index}`);
       } else {
