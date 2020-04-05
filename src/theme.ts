@@ -20,6 +20,7 @@ let _theme = {
   groupBg: '#4660ef',
   groupColor: '#ffffff',
   edgeColor: '#a8b6c7',
+  edgeWidth: 1.5,
   edgeDisableColor: '#d5dadf',
   nodeDot: {
     hive: '#33d6cc',

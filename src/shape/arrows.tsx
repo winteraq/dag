@@ -7,7 +7,7 @@ export const Arrow: React.FC<{ angle?: number; fill?: string; x: number; y: numb
       angle={props.angle}
       x={props.x}
       y={props.y}
-      data={'M 0 0 L 10 5 L 0 10 z'}
+      data={'M 0 0 L -5 -2.5 L 0 -5 z'}
       fill={props.fill || 'green'}
       strokeWidth={1}
     />

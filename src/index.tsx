@@ -112,19 +112,18 @@ export default class Dag extends React.Component<Props, State> {
 
   fitView = () => {
     const stage = this.getStage();
-    const { width: oldWidth, height: oldHeight } = stage.getClientRect({
+    const { width, height } = this.state.dimensions;
+    const { width: stageWidth, height: stageHeight } = stage.getClientRect({
       skipTransform: true,
     });
-    const radio = Math.min(
-      this.state.dimensions.width / oldWidth,
-      this.state.dimensions.height / oldHeight
-    );
+    console.log('fitView', width, stageWidth);
+    const radio = Math.min(width / stageWidth, height / stageHeight);
     if (radio < 1) {
       stage.getStage().scale({ x: radio, y: radio });
     }
     const mousePointTo = {
-      x: this.state.dimensions.width / 2 - oldWidth / 2,
-      y: this.state.dimensions.height / 2 - oldHeight / 2,
+      x: width / 2 - (stageWidth * radio) / 2,
+      y: height / 2 - (stageHeight * radio) / 2,
     };
     stage.position(mousePointTo);
     stage.batchDraw();

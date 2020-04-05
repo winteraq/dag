@@ -20,3 +20,7 @@ export type onNodeContextMenu = (
 ) => void;
 export type onNodeHover = (node: DNode<Node>) => void;
 export type onNodeOutHover = (node: DNode<Node>) => void;
+export type Point = {
+  x: number;
+  y: number;
+};

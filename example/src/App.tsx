@@ -16,6 +16,10 @@ function App() {
             end: '3',
           },
           {
+            start: '3',
+            end: '3',
+          },
+          {
             start: '1',
             end: '5',
           },
