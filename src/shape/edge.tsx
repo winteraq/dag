@@ -10,6 +10,7 @@ export const DagEdge: React.FC<{
   startNode: DNode<Node>;
   endNode: DNode<Node>;
   edge: GraphEdge;
+  type: string;
 }> = ({ startNode, endNode, edge }) => {
   console.log('edge xxx', startNode, endNode);
   if (startNode.id === endNode.id) {

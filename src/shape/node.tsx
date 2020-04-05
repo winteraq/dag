@@ -11,7 +11,8 @@ export const DagNode: React.FC<{
   onContextMenu?: onNodeContextMenu;
   onHover?: onNodeHover;
   onOutHover?: onNodeOutHover;
-}> = ({ node, onContextMenu, onClick, onHover, onOutHover }) => {
+  type: string;
+}> = ({ type, node, onContextMenu, onClick, onHover, onOutHover }) => {
   const nodeOnHover = useRef(false);
   const onMouseEnter = onHover
     ? useCallback(() => {
@@ -42,6 +43,29 @@ export const DagNode: React.FC<{
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
+      {type === 'column' && (
+        <Group>
+          <Rect
+            cornerRadius={getTheme().nodeBorderRadio}
+            fill={getTheme(`secondaryBg`)}
+            stroke={getTheme(`secondaryBorder`)}
+            strokeWidth={1.5}
+            width={node.width}
+            height={getTheme().nodeHeight * ((node.columns?.length || 0) + 1)}
+          />
+          {node.columns?.map((col, index) => {
+            return (
+              <Group
+                key={col.id}
+                x={18}
+                y={getTheme().nodeHeight * (index + 1) + getTheme().halfNodeHeight - 6}
+              >
+                {formatText(col)}
+              </Group>
+            );
+          })}
+        </Group>
+      )}
       <Rect
         cornerRadius={getTheme().nodeBorderRadio}
         fill={getTheme(`${node.type || 'secondary'}Bg`)}

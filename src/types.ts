@@ -5,6 +5,7 @@ export type Node = {
   id: string;
   [key: string]: any;
   style?: any;
+  columns?: any[];
 };
 export type Edge = { start: string; end: string; style?: any; [key: string]: any };
 

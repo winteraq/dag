@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import Dag from '@library';
 
 function App() {

@@ -18,10 +18,12 @@ import {
 import { DagNode } from './shape/node';
 import { DagEdge } from './shape/edge';
 import { DagGroupNode } from './shape/groupNode';
+import { getTheme } from './theme';
 
 type Props = {
   edges: Edge[];
   nodes: Node[];
+  type?: 'column' | 'default';
   groupBy?: GroupBy;
   onNodeClick?: onNodeClick;
   onNodeContextMenu?: onNodeContextMenu;
@@ -44,16 +46,20 @@ export default class Dag extends React.Component<Props, State> {
     },
   };
 
+  static defaultProps = {
+    type: 'default',
+  };
+
   graph: graphlib.Graph<Node>;
   stage = React.createRef<Stage>();
   layer = React.createRef();
 
   constructor(props: Props) {
     super(props);
-    this.setGraph(props.nodes, props.edges, props.groupBy);
+    this.setGraph(props.nodes, props.edges, props.type, props.groupBy);
   }
 
-  setGraph(nodes: Node[], edges: Edge[], groupBy?: GroupBy) {
+  setGraph(nodes: Node[], edges: Edge[], type?: string, groupBy?: GroupBy) {
     this.graph = new graphlib.Graph<Node>({
       directed: true,
       multigraph: true,
@@ -67,8 +73,15 @@ export default class Dag extends React.Component<Props, State> {
       .setDefaultEdgeLabel(function () {
         return {};
       });
+    const { nodeHeight, nodeWidth } = getTheme();
     nodes.forEach((node) => {
-      this.graph.setNode(node.id, { label: node.id, width: 158, height: 28, ...node });
+      const l = type === 'column' && node.columns?.length ? node.columns?.length + 1 : 1;
+      this.graph.setNode(node.id, {
+        label: node.id,
+        width: nodeWidth,
+        height: nodeHeight * l,
+        ...node,
+      });
     });
     edges.forEach((edge: Edge, index) => {
       this.graph.setEdge(edge.start, edge.end, { ...edge }, `${index}`);
@@ -91,7 +104,7 @@ export default class Dag extends React.Component<Props, State> {
       return false;
     }
     if (this.props.nodes !== nextProps.nodes || this.props.edges !== nextProps.edges) {
-      this.setGraph(nextProps.nodes, nextProps.edges, nextProps.groupBy);
+      this.setGraph(nextProps.nodes, nextProps.edges, nextProps.type, nextProps.groupBy);
     }
     return true;
   }
@@ -116,7 +129,6 @@ export default class Dag extends React.Component<Props, State> {
     const { width: stageWidth, height: stageHeight } = stage.getClientRect({
       skipTransform: true,
     });
-    console.log('fitView', width, stageWidth);
     const radio = Math.min(width / stageWidth, height / stageHeight);
     if (radio < 1) {
       stage.getStage().scale({ x: radio, y: radio });
@@ -196,6 +208,7 @@ export default class Dag extends React.Component<Props, State> {
                   return (
                     <DagNode
                       key={v}
+                      type={this.props.type!}
                       node={node}
                       onContextMenu={this.props.onNodeContextMenu}
                       onClick={this.props.onNodeClick}
@@ -209,6 +222,7 @@ export default class Dag extends React.Component<Props, State> {
                   return (
                     <DagEdge
                       key={e.v + e.w + e.name}
+                      type={this.props.type!}
                       startNode={startNode}
                       endNode={endNode}
                       edge={edge}
