@@ -106,5 +106,13 @@ export const lineGenerator = line()
 export function getPathData(points: { x: number; y: number }[]): string {
   // TODO 加缓存？
   const data = lineGenerator.curve(curveBasis)(points.map((item) => [item.x, item.y]));
+  // console.log(data)
   return data!;
 }
+
+export function pathDataToPoints(data: string) {
+         return data
+           .split(/(?=[LMC])/)
+           .map((item) => item.slice(1).split(',').map(Number))
+           .flat();
+       }

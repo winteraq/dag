@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Group, Path } from 'react-konva';
+import { Group, Path, Arrow } from 'react-konva';
 import { GraphEdge, Node as DNode } from 'dagre';
 import { getTheme } from '../theme';
 import { Node } from '../types';
@@ -61,47 +61,65 @@ export const DagEdge: React.FC<{
   ]);
   const startPoint = points[0],
     endPoint = points[edge.points.length - 1],
-    pts = points[edge.points.length - 2];
-  const x = Math.abs(endPoint.x - pts.x);
-  const y = Math.abs(endPoint.y - pts.y);
-  // 斜边长
-  const z = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-  // 弧度
-  const radina =
-    Math.abs(endPoint.x - pts.x) > Math.abs(endPoint.y - pts.y)
-      ? Math.acos(x / z)
-      : Math.asin(y / z);
-  // console.log('edge', startNode, endNode, edge.points, points, radina);
-
-  // 角度
-  const angle = 180 / (Math.PI / radina);
+    pts =
+      points.length <= 4
+        ? { x: (startPoint.x + endPoint.x) / 2, y: endPoint.y }
+        : points[edge.points.length - 2];
   const { edgeWidth } = getTheme();
   const edgeColor = getTheme(`${edge.$state$}edgeColor`);
-  const pathData =
-    points.length <= 4
-      ? `M ${startPoint.x} ${startPoint.y}
-  C ${(startPoint.x + endPoint.x) / 2} ${startPoint.y},
-    ${(startPoint.x + endPoint.x) / 2} ${endPoint.y},
-    ${endPoint.x} ${endPoint.y}`
-      : getPathData(points);
-
+  // const pathData =
+  //   points.length <= 4
+  //     ? `M ${startPoint.x} ${startPoint.y}
+  // C ${(startPoint.x + endPoint.x) / 2} ${startPoint.y},
+  //   ${pts.x} ${pts.y},
+  //   ${endPoint.x} ${endPoint.y}`
+  //     : getPathData(points);
+  const radina = Math.atan2(endPoint.y - pts.y, endPoint.x - pts.x);
+  const angle = (radina * 180) / Math.PI;
+  // console.log('angle', angle, startNode, endNode, pts, endPoint);
   return (
     <Group>
-      {/*<Line*/}
-      {/*  points={edge.points.map((item) => [item.x, item.y]).flat()}*/}
-      {/*  stroke={'blue'}*/}
-      {/*  strokeWidth={2}*/}
-      {/*/>*/}
-      {/*<Line points={points.map((item) => [item.x, item.y]).flat()} stroke={'red'} strokeWidth={2} />*/}
-      <Path data={pathData} stroke={edgeColor} strokeWidth={edgeWidth} />
-      <Group x={endPoint.x} y={endPoint.y}>
-        <Path
-          rotation={angle}
-          data={'M 0 0 L -5 -2.5 L -5 2.5 z'}
-          fill={edgeColor}
-          strokeWidth={edgeWidth}
+      {points.length <= 4 ? (
+        <Arrow
+          points={[
+            startPoint.x,
+            startPoint.y,
+            (startPoint.x + endPoint.x) / 2,
+            startPoint.y,
+            pts.x,
+            pts.y,
+            endPoint.x,
+            endPoint.y,
+          ]}
+          pointerWidth={1.5}
+          pointerLength={1.5}
+          bezier={true}
+          stroke={edgeColor}
+          strokeWidth={1.5}
         />
-      </Group>
+      ) : (
+        <Group>
+          <Path data={getPathData(points)} stroke={edgeColor} strokeWidth={edgeWidth} />
+          <Group x={endPoint.x} y={endPoint.y}>
+            <Path
+              rotation={angle}
+              data={'M 0 0 L -5 -2.5 L -5 2.5 z'}
+              fill={edgeColor}
+              strokeWidth={edgeWidth}
+            />
+          </Group>
+        </Group>
+      )}
+      {/*<Line points={points.map((item) => [item.x, item.y]).flat()} stroke={'red'} strokeWidth={2} />*/}
+      {/*<Path data={pathData} stroke={edgeColor} strokeWidth={edgeWidth} />*/}
+      {/*<Group x={endPoint.x} y={endPoint.y}>*/}
+      {/*  <Path*/}
+      {/*    rotation={-angle}*/}
+      {/*    data={'M 0 0 L -5 -2.5 L -5 2.5 z'}*/}
+      {/*    fill={edgeColor}*/}
+      {/*    strokeWidth={edgeWidth}*/}
+      {/*  />*/}
+      {/*</Group>*/}
     </Group>
   );
 };
