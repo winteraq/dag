@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text } from 'react-konva';
 import { curveBasis, line } from 'd3-shape';
+import { getTheme } from './theme';
 
 const canvas = document.createElement('canvas');
 canvas.width = 300;
@@ -15,20 +16,16 @@ export const measureText = function (text: string) {
 };
 
 export const formatText = function (node: any) {
-  if (!node.data.label || typeof node.data.label === 'string') {
+  const color = getTheme(`${node.type || 'secondary'}Color`);
+  if (!node.label || typeof node.label === 'string') {
     return (
-      <Text
-        text={`${node.data.label}`}
-        fontSize={12}
-        fill={'#FFFFFF'}
-        fontFamily={'Ubuntu Mono, Tahoma'}
-      />
+      <Text text={`${node.label}`} fontSize={12} fill={color} fontFamily={'Ubuntu Mono, Tahoma'} />
     );
   } else {
     let x = 0;
-    return node.data.label.map((item: number, index: number) => {
+    return node.label.map((item: number, index: number) => {
       const text = typeof item === 'string' ? item : item[0];
-      const attr = typeof item === 'string' ? { fill: '#FFFFFF' } : item[1] || {};
+      const attr = typeof item === 'string' ? { fill: color } : item[1] || {};
       let tNode = (
         <Text
           fontSize={12}
@@ -96,6 +93,7 @@ export const fittingString = function fittingString(
   }
   return str;
 };
+
 export const lineGenerator = line()
   .x(function (d) {
     return d[0];
@@ -103,6 +101,7 @@ export const lineGenerator = line()
   .y(function (d) {
     return d[1];
   });
+
 export function getPathData(points: { x: number; y: number }[]): string {
   // TODO 加缓存？
   const data = lineGenerator.curve(curveBasis)(points.map((item) => [item.x, item.y]));

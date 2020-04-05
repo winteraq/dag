@@ -21,6 +21,10 @@ function App() {
             end: '5',
           },
           {
+            start: '1',
+            end: '5',
+          },
+          {
             start: '3',
             end: '5',
           },
@@ -33,13 +37,17 @@ function App() {
           {
             id: '1',
             name: '1',
+            label: '1',
           },
-          { id: '2', name: '1' },
-          { id: '3', name: '2' },
-          { id: '4', name: '2' },
-          { id: '5', name: '1' },
+          { id: '2', name: '1', label: '2' },
+          { id: '3', name: '2', label: '3' },
+          { id: '4', name: '2', label: '4' },
+          { id: '5', name: '1', label: '5' },
         ]}
-        groupBy={'name'}
+        groupBy={{
+          key: 'name',
+          label: '负责人',
+        }}
       />
     </div>
   );
