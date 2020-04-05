@@ -2,6 +2,7 @@
   "name": "example",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://winteraq.github.io/dag",
   "dependencies": {
     "dag": "file:..",
     "@testing-library/jest-dom": "^5.3.0",
