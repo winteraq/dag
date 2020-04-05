@@ -9,7 +9,7 @@ export const DagGroupNode: React.FC<{ node: DNode<Node>; groupBy: GroupBy }> = (
   node,
   groupBy,
 }) => {
-  console.log('node',node)
+  // console.log('node',node)
   const text = `${groupBy.label}: ${node[groupBy.key]}`;
   return (
     <Group x={node.x - node.width / 2} y={node.y - node.height / 2}>

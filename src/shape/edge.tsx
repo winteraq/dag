@@ -42,7 +42,7 @@ export const DagEdge: React.FC<{
   type: string;
   activeNode?: Node;
 }> = ({ startNode, endNode, edge, type }) => {
-  console.log('edge xxx', startNode, endNode, edge);
+  // console.log('edge xxx', startNode, endNode, edge);
   // 自包含环形边
   if (startNode.id === endNode.id) {
     const startPoint = {

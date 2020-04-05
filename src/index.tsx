@@ -54,6 +54,7 @@ export default class Dag extends React.Component<Props, State> {
   graph: graphlib.Graph<Node>;
 
   stage = React.createRef<Stage>();
+  layer = React.createRef<Konva.Layer>();
 
   constructor(props: Props) {
     super(props);
@@ -113,7 +114,11 @@ export default class Dag extends React.Component<Props, State> {
       const res = _.groupBy(nodes, groupBy.key);
       Object.keys(res).forEach((key) => {
         const groupId = `$group_${key}$`;
-        this.graph.setNode(groupId, { label: key, [groupBy.key]: key, [isGroup]: true });
+        this.graph.setNode(groupId, {
+          label: key,
+          [groupBy.key]: key,
+          [isGroup]: true,
+        });
         res[key].forEach((node) => {
           this.graph.setParent(node.id, groupId);
         });
@@ -152,15 +157,21 @@ export default class Dag extends React.Component<Props, State> {
     const { width: stageWidth, height: stageHeight } = stage.getClientRect({
       skipTransform: true,
     });
-    const radio = Math.min(width / stageWidth, height / stageHeight);
+    const radio = Math.min(width / stageWidth, height / stageHeight) - 0.1;
     if (radio < 1) {
       stage.getStage().scale({ x: radio, y: radio });
+      const mousePointTo = {
+        x: width / 2 - (stageWidth * radio) / 2,
+        y: height / 2 - (stageHeight * radio) / 2,
+      };
+      stage.position(mousePointTo);
+    } else {
+      const mousePointTo = {
+        x: width / 2 - stageWidth / 2,
+        y: height / 2 - stageHeight / 2,
+      };
+      stage.position(mousePointTo);
     }
-    const mousePointTo = {
-      x: width / 2 - (stageWidth * radio) / 2,
-      y: height / 2 - (stageHeight * radio) / 2,
-    };
-    stage.position(mousePointTo);
     stage.batchDraw();
   };
 
@@ -202,7 +213,9 @@ export default class Dag extends React.Component<Props, State> {
       <Measure
         bounds
         onResize={(contentRect) => {
-          this.setState({ dimensions: contentRect.bounds || { width: 0, height: 0 } });
+          this.setState({
+            dimensions: contentRect.bounds || { width: 0, height: 0 },
+          });
         }}
       >
         {({ measureRef }) => (
@@ -220,7 +233,7 @@ export default class Dag extends React.Component<Props, State> {
               }}
               draggable
             >
-              <Layer>
+              <Layer ref={this.layer}>
                 {/*先遍历node，这样才能提前索引 column*/}
                 {this.graph.nodes().map((v) => {
                   const node = this.graph.node(v);
