@@ -1,7 +1,6 @@
 import React from 'react';
 import { Text } from 'react-konva';
 import { curveBasis, line } from 'd3-shape';
-import { getTheme } from './theme';
 
 const canvas = document.createElement('canvas');
 canvas.width = 300;
@@ -15,12 +14,15 @@ export const measureText = function (text: string) {
   return ctx!.measureText(text).width;
 };
 
-export const formatText = function (node: any) {
-  const color = getTheme(`${node.$state$}Color`);
+export const formatText = function (node: any, color: string) {
   if (!node.label || typeof node.label === 'string') {
     return (
-      <Text text={`${node.label}`} fontSize={12}
-            fill={color} fontFamily={'Ubuntu Mono, Tahoma'} />
+      <Text
+        text={`${node.label}`}
+        fontSize={12}
+        fill={color}
+        fontFamily={'Ubuntu Mono, Tahoma'}
+      />
     );
   } else {
     let x = 0;
@@ -111,8 +113,8 @@ export function getPathData(points: { x: number; y: number }[]): string {
 }
 
 export function pathDataToPoints(data: string) {
-         return data
-           .split(/(?=[LMC])/)
-           .map((item) => item.slice(1).split(',').map(Number))
-           .flat();
-       }
+  return data
+    .split(/(?=[LMC])/)
+    .map((item) => item.slice(1).split(',').map(Number))
+    .flat();
+}

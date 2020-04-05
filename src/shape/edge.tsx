@@ -50,7 +50,14 @@ export const DagEdge: React.FC<{
       x: startNode.x,
       y: startNode.y + startNode.height / 2,
     };
-    return <RingEdge edgeColor={edgeColor} direction={'bottom'} startPoint={startPoint} endPoint={startPoint} />;
+    return (
+      <RingEdge
+        edgeColor={edgeColor}
+        direction={'bottom'}
+        startPoint={startPoint}
+        endPoint={startPoint}
+      />
+    );
   }
   const points = useMemo(() => getPoints(startNode, endNode, edge, type), [
     startNode.y,

@@ -89,6 +89,7 @@ export default class Dag extends React.Component<Props, State> {
           ...node,
         },
         $state$,
+        type,
         primaryNode
       );
     });
@@ -104,8 +105,8 @@ export default class Dag extends React.Component<Props, State> {
             $state$ = 'active';
             const startNode = this.graph.node(edge.start);
             const endNode = this.graph.node(edge.end);
-            this.setNode(startNode, $state$, primaryNode);
-            this.setNode(endNode, $state$, primaryNode);
+            this.setNode(startNode, $state$, type, primaryNode, edge.start);
+            this.setNode(endNode, $state$, type, primaryNode, edge.end);
             this.graph.setEdge(edge.start, edge.end, { ...edge, $state$: '' }, `${index}`);
             return;
           }
@@ -132,11 +133,26 @@ export default class Dag extends React.Component<Props, State> {
     layout(this.graph);
   }
 
-  setNode(node: Node, $state$: string, primaryNode?: { id: string }) {
+  setNode(
+    node: Node,
+    $state$: string,
+    type?: string,
+    primaryNode?: { id: string },
+    selectColId?: string
+  ) {
+    type === 'column' &&
+      node.columns?.forEach((col) => {
+        if (col.id == selectColId) {
+          col.$state$ = $state$;
+        }
+      });
     if (primaryNode?.id && primaryNode?.id == node.id) {
       this.graph.setNode(node.id, { ...node, $state$: 'primary' });
     } else {
-      this.graph.setNode(node.id, { ...node, $state$ });
+      this.graph.setNode(node.id, {
+        ...node,
+        $state$: type === 'column' && $state$ === 'active' ? 'secondary' : $state$,
+      });
     }
   }
 

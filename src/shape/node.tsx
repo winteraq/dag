@@ -65,7 +65,7 @@ export const DagNode: React.FC<{
                 x={18}
                 y={getTheme().nodeHeight * (index + 1) + getTheme().halfNodeHeight - 6}
               >
-                {formatText(col)}
+                {formatText(col, getTheme(`${col.$state$ || node.$state$}ColumnColor`))}
               </Group>
             );
           })}
@@ -88,7 +88,7 @@ export const DagNode: React.FC<{
         y={getTheme().halfNodeHeight - 3}
       />
       <Group x={18} y={getTheme().halfNodeHeight - 6}>
-        {formatText(node)}
+        {formatText(node, getTheme(`${node.$state$}Color`))}
       </Group>
     </Group>
   );
