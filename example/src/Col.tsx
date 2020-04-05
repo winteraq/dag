@@ -104,6 +104,7 @@ function App() {
           label: '负责人',
         }}
         type={'column'}
+        primaryNode={{ id: '2' }}
         activeNode={{ id: '2', columnId: '2' }}
       />
     </div>

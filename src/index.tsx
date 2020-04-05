@@ -25,6 +25,7 @@ type Props = {
   nodes: Node[];
   type?: 'column' | 'default';
   activeNode?: { id: string; columnId?: string };
+  primaryNode?: { id: string };
   groupBy?: GroupBy;
   onNodeClick?: onNodeClick;
   onNodeContextMenu?: onNodeContextMenu;
@@ -61,7 +62,7 @@ export default class Dag extends React.Component<Props, State> {
     this.setGraph(props);
   }
 
-  setGraph({ nodes, edges, type, groupBy, activeNode }: Props) {
+  setGraph({ nodes, edges, type, groupBy, activeNode, primaryNode }: Props) {
     this.graph = new graphlib.Graph<Node>({
       directed: true,
       multigraph: true,
@@ -79,13 +80,17 @@ export default class Dag extends React.Component<Props, State> {
     const { nodeHeight, nodeWidth } = getTheme();
     nodes.forEach((node) => {
       const l = type === 'column' && node.columns?.length ? node.columns?.length + 1 : 1;
-      this.graph.setNode(node.id, {
-        label: node.id,
-        width: nodeWidth,
-        height: nodeHeight * l,
+      this.setNode(
+        {
+          label: node.id,
+          width: nodeWidth,
+          height: nodeHeight * l,
+          $state$,
+          ...node,
+        },
         $state$,
-        ...node,
-      });
+        primaryNode
+      );
     });
     edges.forEach((edge: Edge, index) => {
       if (activeNode) {
@@ -99,8 +104,8 @@ export default class Dag extends React.Component<Props, State> {
             $state$ = 'active';
             const startNode = this.graph.node(edge.start);
             const endNode = this.graph.node(edge.end);
-            this.graph.setNode(startNode.id, { ...startNode, $state$ });
-            this.graph.setNode(endNode.id, { ...endNode, $state$ });
+            this.setNode(startNode, $state$, primaryNode);
+            this.setNode(endNode, $state$, primaryNode);
             this.graph.setEdge(edge.start, edge.end, { ...edge, $state$: '' }, `${index}`);
             return;
           }
@@ -125,6 +130,14 @@ export default class Dag extends React.Component<Props, State> {
       });
     }
     layout(this.graph);
+  }
+
+  setNode(node: Node, $state$: string, primaryNode?: { id: string }) {
+    if (primaryNode?.id && primaryNode?.id == node.id) {
+      this.graph.setNode(node.id, { ...node, $state$: 'primary' });
+    } else {
+      this.graph.setNode(node.id, { ...node, $state$ });
+    }
   }
 
   shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>) {
