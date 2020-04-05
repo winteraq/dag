@@ -11,6 +11,7 @@ export const DagNode: React.FC<{
   onContextMenu?: onNodeContextMenu;
   onHover?: onNodeHover;
   onOutHover?: onNodeOutHover;
+  activeNode?: Node;
   type: string;
 }> = ({ type, node, onContextMenu, onClick, onHover, onOutHover }) => {
   const nodeOnHover = useRef(false);
@@ -72,8 +73,8 @@ export const DagNode: React.FC<{
       )}
       <Rect
         cornerRadius={getTheme().nodeBorderRadio}
-        fill={getTheme(`${node.type || 'secondary'}Bg`)}
-        stroke={getTheme(`${node.type || 'secondary'}Border`)}
+        fill={getTheme(`${node.$state$}Bg`)}
+        stroke={getTheme(`${node.$state$}Border`)}
         strokeWidth={1.5}
         width={node.width}
         height={getTheme().nodeHeight}

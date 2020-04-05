@@ -16,10 +16,11 @@ export const measureText = function (text: string) {
 };
 
 export const formatText = function (node: any) {
-  const color = getTheme(`${node.type || 'secondary'}Color`);
+  const color = getTheme(`${node.$state$}Color`);
   if (!node.label || typeof node.label === 'string') {
     return (
-      <Text text={`${node.label}`} fontSize={12} fill={color} fontFamily={'Ubuntu Mono, Tahoma'} />
+      <Text text={`${node.label}`} fontSize={12}
+            fill={color} fontFamily={'Ubuntu Mono, Tahoma'} />
     );
   } else {
     let x = 0;

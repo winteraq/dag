@@ -40,6 +40,7 @@ export const DagEdge: React.FC<{
   endNode: DNode<Node>;
   edge: GraphEdge;
   type: string;
+  activeNode?: Node;
 }> = ({ startNode, endNode, edge, type }) => {
   console.log('edge xxx', startNode, endNode, edge);
   // 自包含环形边
@@ -74,7 +75,8 @@ export const DagEdge: React.FC<{
 
   // 角度
   const angle = 180 / (Math.PI / radina);
-  const { edgeWidth, edgeColor } = getTheme();
+  const { edgeWidth } = getTheme();
+  const edgeColor = getTheme(`${edge.$state$}edgeColor`);
   const pathData =
     points.length <= 4
       ? `M ${startPoint.x} ${startPoint.y}

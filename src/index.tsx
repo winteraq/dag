@@ -24,6 +24,7 @@ type Props = {
   edges: Edge[];
   nodes: Node[];
   type?: 'column' | 'default';
+  activeNode?: { id: string; columnId?: string };
   groupBy?: GroupBy;
   onNodeClick?: onNodeClick;
   onNodeContextMenu?: onNodeContextMenu;
@@ -51,15 +52,15 @@ export default class Dag extends React.Component<Props, State> {
   };
 
   graph: graphlib.Graph<Node>;
+
   stage = React.createRef<Stage>();
-  layer = React.createRef();
 
   constructor(props: Props) {
     super(props);
-    this.setGraph(props.nodes, props.edges, props.type, props.groupBy);
+    this.setGraph(props);
   }
 
-  setGraph(nodes: Node[], edges: Edge[], type?: string, groupBy?: GroupBy) {
+  setGraph({ nodes, edges, type, groupBy, activeNode }: Props) {
     this.graph = new graphlib.Graph<Node>({
       directed: true,
       multigraph: true,
@@ -73,6 +74,7 @@ export default class Dag extends React.Component<Props, State> {
       .setDefaultEdgeLabel(function () {
         return {};
       });
+    let $state$ = activeNode ? 'disable' : 'secondary';
     const { nodeHeight, nodeWidth } = getTheme();
     nodes.forEach((node) => {
       const l = type === 'column' && node.columns?.length ? node.columns?.length + 1 : 1;
@@ -80,11 +82,25 @@ export default class Dag extends React.Component<Props, State> {
         label: node.id,
         width: nodeWidth,
         height: nodeHeight * l,
+        $state$,
         ...node,
       });
     });
     edges.forEach((edge: Edge, index) => {
-      this.graph.setEdge(edge.start, edge.end, { ...edge }, `${index}`);
+      if (activeNode) {
+        if (edge.start === activeNode.id || edge.end === activeNode.id) {
+          $state$ = 'active';
+          const startNode = this.graph.node(edge.start);
+          const endNode = this.graph.node(edge.end);
+          this.graph.setNode(startNode.id, { ...startNode, $state$ });
+          this.graph.setNode(endNode.id, { ...endNode, $state$ });
+          this.graph.setEdge(edge.start, edge.end, { ...edge, $state$: '' }, `${index}`);
+          return;
+        }
+        this.graph.setEdge(edge.start, edge.end, { ...edge, $state$: 'disable' }, `${index}`);
+      } else {
+        this.graph.setEdge(edge.start, edge.end, { ...edge, $state$: '' }, `${index}`);
+      }
     });
     if (groupBy) {
       const res = _.groupBy(nodes, groupBy.key);
@@ -104,7 +120,7 @@ export default class Dag extends React.Component<Props, State> {
       return false;
     }
     if (this.props.nodes !== nextProps.nodes || this.props.edges !== nextProps.edges) {
-      this.setGraph(nextProps.nodes, nextProps.edges, nextProps.type, nextProps.groupBy);
+      this.setGraph(nextProps);
     }
     return true;
   }
@@ -201,7 +217,6 @@ export default class Dag extends React.Component<Props, State> {
                 {/*先遍历node，这样才能提前索引 column*/}
                 {this.graph.nodes().map((v) => {
                   const node = this.graph.node(v);
-                  console.log(node);
                   // @ts-ignore
                   if (node[isGroup]) {
                     return <DagGroupNode key={v} node={node} groupBy={this.props.groupBy!} />;
@@ -213,6 +228,7 @@ export default class Dag extends React.Component<Props, State> {
                       node={node}
                       onContextMenu={this.props.onNodeContextMenu}
                       onClick={this.props.onNodeClick}
+                      activeNode={this.props.activeNode}
                     />
                   );
                 })}
@@ -227,6 +243,7 @@ export default class Dag extends React.Component<Props, State> {
                       startNode={startNode}
                       endNode={endNode}
                       edge={edge}
+                      activeNode={this.props.activeNode}
                     />
                   );
                 })}

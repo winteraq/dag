@@ -50,6 +50,7 @@ function App() {
           key: 'name',
           label: '负责人',
         }}
+        activeNode={{ id: '2' }}
       />
     </div>
   );
