@@ -18,13 +18,22 @@ export const measureText = function (text: string) {
 export const formatText = function (label: any, color: string, searchKey?: string) {
   const { searchBg, searchColor, fontFamily } = getTheme();
   if (!searchKey) {
-    return <Text text={`${label}`} fontSize={12} fill={color} fontFamily={fontFamily} />;
+    return (
+      <Text
+        listening={false}
+        text={`${label}`}
+        fontSize={12}
+        fill={color}
+        fontFamily={fontFamily}
+      />
+    );
   } else {
     const labels: any[] = [];
     let x = 0;
     label.split(searchKey).forEach((item: string, index: number) => {
       labels.push(
         <Text
+          listening={false}
           x={x}
           key={`${index}-1`}
           text={item}
@@ -35,7 +44,7 @@ export const formatText = function (label: any, color: string, searchKey?: strin
       );
       x += measureText(item);
       labels.push(
-        <Label x={x} key={`${index}-2`}>
+        <Label listening={false} x={x} key={`${index}-2`}>
           <Tag fill={searchBg} />
           <Text fontSize={12} fill={searchColor} text={searchKey} fontFamily={fontFamily} />
         </Label>

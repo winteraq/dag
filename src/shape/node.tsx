@@ -4,6 +4,7 @@ import { Node as DNode } from 'dagre';
 import { getTheme } from '../theme';
 import { Node, onNodeHover, onNodeClick, onNodeContextMenu, onNodeOutHover } from '../types';
 import { fittingString, formatText } from '../util';
+import { Stage } from 'react-konva';
 
 export const DagNode: React.FC<{
   node: DNode<Node>;
@@ -13,11 +14,13 @@ export const DagNode: React.FC<{
   onOutHover?: onNodeOutHover;
   activeNode?: Node;
   searchKey?: string;
+  stage?: Stage;
   type: string;
-}> = ({ type, node, onContextMenu, onClick, onHover, onOutHover, searchKey }) => {
+}> = ({ type, node, onContextMenu, onClick, onHover, onOutHover, searchKey, stage }) => {
   const nodeOnHover = useRef(false);
   const onMouseEnter = onHover
-    ? useCallback(() => {
+    ? useCallback((e) => {
+        console.log(e);
         if (!nodeOnHover.current) {
           onHover && onHover(node);
         }
@@ -49,6 +52,7 @@ export const DagNode: React.FC<{
       {type === 'column' && (
         <>
           <Rect
+            listening={false}
             cornerRadius={getTheme().nodeBorderRadio}
             fill={'#FFFFFF'}
             stroke={getTheme(`${node.$state$}Border`)}
@@ -62,16 +66,40 @@ export const DagNode: React.FC<{
             }
             node.$columnMap$[col.id] = { ...col, index: index + 1 };
             return (
-              <Group
-                key={col.id}
-                x={18}
-                y={getTheme().nodeHeight * (index + 1) + getTheme().halfNodeHeight - 6}
-              >
-                {formatText(
-                  fittingString(col.label, nodeWidth - 20, 12),
-                  getTheme(`${col.$state$ || node.$state$}ColumnColor`),
-                  searchKey
-                )}
+              <Group key={col.id}>
+                <Group
+                  x={18}
+                  y={getTheme().nodeHeight * (index + 1) + getTheme().halfNodeHeight - 6}
+                  height={getTheme().nodeHeight}
+                >
+                  <Rect
+                    cornerRadius={getTheme().nodeBorderRadio}
+                    fill={getTheme().hoverBg}
+                    opacity={0}
+                    strokeWidth={0}
+                    x={-17}
+                    y={6 - getTheme().halfNodeHeight}
+                    width={node.width - 2}
+                    height={getTheme().nodeHeight}
+                    onClick={(e) => {
+                      e.cancelBubble = true;
+                      onClick && onClick(e, node, col);
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.setAttr('opacity', 1);
+                      stage!.getStage().batchDraw();
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.setAttr('opacity', 0);
+                      stage!.getStage().batchDraw();
+                    }}
+                  />
+                  {formatText(
+                    fittingString(col.label, nodeWidth - 20, 12),
+                    getTheme(`${col.$state$ || node.$state$}ColumnColor`),
+                    searchKey
+                  )}
+                </Group>
               </Group>
             );
           })}

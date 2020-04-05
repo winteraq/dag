@@ -106,7 +106,10 @@ function App() {
         type={'column'}
         primaryNode={{ id: '2' }}
         activeNode={{ id: '2', columnId: '2' }}
-        searchKey={"hello"}
+        searchKey={'hello'}
+        onNodeClick={(e, node, column) => {
+          console.log(e, node, column);
+        }}
       />
     </div>
   );

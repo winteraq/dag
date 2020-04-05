@@ -88,9 +88,10 @@ export const DagEdge: React.FC<{
   }, [endPoint.x, endPoint.y, pts.y, pts.x]);
   // console.log('angle', angle, startNode, endNode, pts, endPoint);
   return (
-    <>
+    <Group listening={false}>
       {points.length <= 4 ? (
         <Arrow
+          listening={false}
           points={[
             startPoint.x,
             startPoint.y,
@@ -130,6 +131,6 @@ export const DagEdge: React.FC<{
       {/*    strokeWidth={edgeWidth}*/}
       {/*  />*/}
       {/*</Group>*/}
-    </>
+    </Group>
   );
 };

@@ -34,6 +34,7 @@ let _theme = {
   disableedgeColor: '#d5dadf',
   activeNodeColor: '#416eff',
   fontFamily: 'Ubuntu Mono, Tahoma',
+  hoverBg: '#f5f6fa',
   nodeDot: {
     hive: '#33d6cc',
     clickhouse: '#f5f6fa',

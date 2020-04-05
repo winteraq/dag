@@ -280,6 +280,7 @@ export default class Dag extends React.Component<Props, State> {
                       onClick={this.props.onNodeClick}
                       activeNode={this.props.activeNode}
                       searchKey={this.props.searchKey}
+                      stage={this.stage.current!}
                     />
                   );
                 })}

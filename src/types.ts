@@ -14,7 +14,11 @@ export type GroupBy = {
   label: string;
 };
 
-export type onNodeClick = (evt: Konva.KonvaEventObject<MouseEvent>, node: DNode<Node>) => void;
+export type onNodeClick = (
+  evt: Konva.KonvaEventObject<MouseEvent>,
+  node: DNode<Node>,
+  column?: Node
+) => void;
 export type onNodeContextMenu = (
   evt: Konva.KonvaEventObject<PointerEvent>,
   node: DNode<Node>

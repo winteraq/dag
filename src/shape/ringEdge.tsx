@@ -27,7 +27,7 @@ export const RingEdge: React.FC<{
   }
   const { edgeWidth } = getTheme();
   return (
-    <Group>
+    <Group listening={false}>
       <Path
         data={`M${startPoint.x} ${startPoint.y} C${ctp1} ${ctp2} ${endPoint.x} ${endPoint.y}`}
         stroke={edgeColor}
