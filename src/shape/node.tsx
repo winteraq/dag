@@ -54,6 +54,10 @@ export const DagNode: React.FC<{
             height={getTheme().nodeHeight * ((node.columns?.length || 0) + 1)}
           />
           {node.columns?.map((col, index) => {
+            if (!node.$columnMap$) {
+              node.$columnMap$ = {};
+            }
+            node.$columnMap$[col.id] = { ...col, index: index + 1 };
             return (
               <Group
                 key={col.id}

@@ -198,6 +198,7 @@ export default class Dag extends React.Component<Props, State> {
               draggable
             >
               <Layer>
+                {/*先遍历node，这样才能提前索引 column*/}
                 {this.graph.nodes().map((v) => {
                   const node = this.graph.node(v);
                   console.log(node);
