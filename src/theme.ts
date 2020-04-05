@@ -14,7 +14,7 @@ let _theme = {
   secondaryBorderRadio: [2, 2, 2, 2],
   disableColor: '#ffffff',
   disableBg: '#c3c8cd',
-  disableBorder: '#ffffff',
+  disableBorder: '#f5f6fa',
   disableBorderRadio: [2, 2, 2, 2],
   activeColor: '#282f38',
   activeBg: '#ffffff',

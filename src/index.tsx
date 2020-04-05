@@ -170,7 +170,7 @@ export default class Dag extends React.Component<Props, State> {
     const { width: stageWidth, height: stageHeight } = stage.getClientRect({
       skipTransform: true,
     });
-    const radio = Math.min(width / stageWidth, height / stageHeight) - 0.1;
+    const radio = Math.min(width / stageWidth, height / stageHeight) - 0.15;
     if (radio < 1) {
       stage.getStage().scale({ x: radio, y: radio });
       const mousePointTo = {

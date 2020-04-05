@@ -45,7 +45,7 @@ export const DagNode: React.FC<{
       onMouseLeave={onMouseLeave}
     >
       {type === 'column' && (
-        <Group>
+        <>
           <Rect
             cornerRadius={getTheme().nodeBorderRadio}
             fill={'#FFFFFF'}
@@ -69,7 +69,7 @@ export const DagNode: React.FC<{
               </Group>
             );
           })}
-        </Group>
+        </>
       )}
       <Rect
         cornerRadius={getTheme().nodeBorderRadio}

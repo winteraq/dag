@@ -13,7 +13,7 @@ export const DagGroupNode: React.FC<{ node: DNode<Node>; groupBy: GroupBy }> = (
   const text = `${groupBy.label}: ${node[groupBy.key]}`;
   return (
     <Group x={node.x - node.width / 2} y={node.y - node.height / 2}>
-      <Group y={-27}>
+      <Group x={0} y={-27}>
         <Rect
           cornerRadius={[2, 2, 2, 2]}
           height={28}

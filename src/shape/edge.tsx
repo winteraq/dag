@@ -74,11 +74,14 @@ export const DagEdge: React.FC<{
   //   ${pts.x} ${pts.y},
   //   ${endPoint.x} ${endPoint.y}`
   //     : getPathData(points);
-  const radina = Math.atan2(endPoint.y - pts.y, endPoint.x - pts.x);
-  const angle = (radina * 180) / Math.PI;
+  const angle = useMemo(() => {
+    const radina = Math.atan2(endPoint.y - pts.y, endPoint.x - pts.x);
+    const angle = (radina * 180) / Math.PI;
+    return angle;
+  }, [endPoint.x, endPoint.y, pts.y, pts.x]);
   // console.log('angle', angle, startNode, endNode, pts, endPoint);
   return (
-    <Group>
+    <>
       {points.length <= 4 ? (
         <Arrow
           points={[
@@ -98,7 +101,7 @@ export const DagEdge: React.FC<{
           strokeWidth={1.5}
         />
       ) : (
-        <Group>
+        <>
           <Path data={getPathData(points)} stroke={edgeColor} strokeWidth={edgeWidth} />
           <Group x={endPoint.x} y={endPoint.y}>
             <Path
@@ -108,7 +111,7 @@ export const DagEdge: React.FC<{
               strokeWidth={edgeWidth}
             />
           </Group>
-        </Group>
+        </>
       )}
       {/*<Line points={points.map((item) => [item.x, item.y]).flat()} stroke={'red'} strokeWidth={2} />*/}
       {/*<Path data={pathData} stroke={edgeColor} strokeWidth={edgeWidth} />*/}
@@ -120,6 +123,6 @@ export const DagEdge: React.FC<{
       {/*    strokeWidth={edgeWidth}*/}
       {/*  />*/}
       {/*</Group>*/}
-    </Group>
+    </>
   );
 };
