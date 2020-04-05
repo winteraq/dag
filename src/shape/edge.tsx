@@ -42,6 +42,7 @@ export const DagEdge: React.FC<{
   type: string;
   activeNode?: Node;
 }> = ({ startNode, endNode, edge, type }) => {
+  const edgeColor = getTheme(`${edge.$state$}edgeColor`);
   // console.log('edge xxx', startNode, endNode, edge);
   // 自包含环形边
   if (startNode.id === endNode.id) {
@@ -49,7 +50,7 @@ export const DagEdge: React.FC<{
       x: startNode.x,
       y: startNode.y + startNode.height / 2,
     };
-    return <RingEdge direction={'bottom'} startPoint={startPoint} endPoint={startPoint} />;
+    return <RingEdge edgeColor={edgeColor} direction={'bottom'} startPoint={startPoint} endPoint={startPoint} />;
   }
   const points = useMemo(() => getPoints(startNode, endNode, edge, type), [
     startNode.y,
@@ -66,7 +67,6 @@ export const DagEdge: React.FC<{
         ? { x: (startPoint.x + endPoint.x) / 2, y: endPoint.y }
         : points[edge.points.length - 2];
   const { edgeWidth } = getTheme();
-  const edgeColor = getTheme(`${edge.$state$}edgeColor`);
   // const pathData =
   //   points.length <= 4
   //     ? `M ${startPoint.x} ${startPoint.y}
@@ -94,8 +94,8 @@ export const DagEdge: React.FC<{
             endPoint.x,
             endPoint.y,
           ]}
-          pointerWidth={1.5}
-          pointerLength={1.5}
+          pointerWidth={3}
+          pointerLength={3}
           bezier={true}
           stroke={edgeColor}
           strokeWidth={1.5}

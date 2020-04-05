@@ -7,7 +7,8 @@ export const RingEdge: React.FC<{
   startPoint: Point;
   endPoint: Point;
   direction: string;
-}> = function ({ startPoint, endPoint, direction }) {
+  edgeColor?: string;
+}> = function ({ startPoint, endPoint, direction, edgeColor }) {
   // 控制点
   let ctp1 = '',
     ctp2 = '';
@@ -24,13 +25,12 @@ export const RingEdge: React.FC<{
     ctp1 = `${startPoint.x - 40} ${startPoint.y + 80}`;
     ctp2 = `${endPoint.x + 40} ${endPoint.y - 80}`;
   }
-  const color = getTheme().edgeColor;
   const { edgeWidth } = getTheme();
   return (
     <Group>
       <Path
         data={`M${startPoint.x} ${startPoint.y} C${ctp1} ${ctp2} ${endPoint.x} ${endPoint.y}`}
-        stroke={color}
+        stroke={edgeColor}
         strokeWidth={edgeWidth}
       />
       <Group x={startPoint.x} y={startPoint.y}>
@@ -38,7 +38,7 @@ export const RingEdge: React.FC<{
           offsetY={0}
           offsetX={0}
           rotation={-30}
-          fill={color}
+          fill={edgeColor}
           data={`M 0 0 L -5 -2.5 L -5 2.5 Z`}
         />
       </Group>
