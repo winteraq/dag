@@ -1,15 +1,34 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Group, Rect } from 'react-konva';
 import { Node as DNode } from 'dagre';
 import { getTheme } from '../theme';
-import { Node, onNodeClick, onNodeContextMenu } from '../types';
+import { Node, onNodeHover, onNodeClick, onNodeContextMenu, onNodeOutHover } from '../types';
 import { formatText } from '../util';
 
 export const DagNode: React.FC<{
   node: DNode<Node>;
   onClick?: onNodeClick;
   onContextMenu?: onNodeContextMenu;
-}> = ({ node, onContextMenu, onClick }) => {
+  onHover?: onNodeHover;
+  onOutHover?: onNodeOutHover;
+}> = ({ node, onContextMenu, onClick, onHover, onOutHover }) => {
+  const nodeOnHover = useRef(false);
+  const onMouseEnter = onHover
+    ? useCallback(() => {
+        if (!nodeOnHover.current) {
+          onHover && onHover(node);
+        }
+        nodeOnHover.current = true;
+      }, [])
+    : undefined;
+  const onMouseLeave = onOutHover
+    ? useCallback(() => {
+        if (nodeOnHover.current) {
+          onOutHover && onOutHover(node);
+        }
+        nodeOnHover.current = false;
+      }, [])
+    : undefined;
   return (
     <Group
       x={node.x - node.width / 2}
@@ -20,6 +39,8 @@ export const DagNode: React.FC<{
       onContextMenu={(e) => {
         onContextMenu && onContextMenu(e, node);
       }}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <Rect
         cornerRadius={getTheme().nodeBorderRadio}

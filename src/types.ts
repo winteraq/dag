@@ -18,3 +18,5 @@ export type onNodeContextMenu = (
   evt: Konva.KonvaEventObject<PointerEvent>,
   node: DNode<Node>
 ) => void;
+export type onNodeHover = (node: DNode<Node>) => void;
+export type onNodeOutHover = (node: DNode<Node>) => void;

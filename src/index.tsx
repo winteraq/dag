@@ -6,7 +6,15 @@ import { graphlib, layout } from 'dagre';
 import Konva from 'konva';
 import _ from 'lodash';
 import { isGroup } from './contants';
-import { Edge, GroupBy, Node, onNodeClick, onNodeContextMenu } from './types';
+import {
+  Edge,
+  GroupBy,
+  Node,
+  onNodeClick,
+  onNodeContextMenu,
+  onNodeHover,
+  onNodeOutHover,
+} from './types';
 import { DagNode } from './shape/node';
 import { DagEdge } from './shape/edge';
 import { DagGroupNode } from './shape/groupNode';
@@ -17,6 +25,8 @@ type Props = {
   groupBy?: GroupBy;
   onNodeClick?: onNodeClick;
   onNodeContextMenu?: onNodeContextMenu;
+  onNodeHover?: onNodeHover;
+  onNodeOutHover?: onNodeOutHover;
 };
 
 type State = {
@@ -197,7 +207,14 @@ export default class Dag extends React.Component<Props, State> {
                   const edge = this.graph.edge(e);
                   const startNode = this.graph.node(e.v);
                   const endNode = this.graph.node(e.w);
-                  return <DagEdge key={e.v + e.w + e.name} startNode={startNode} endNode={endNode} edge={edge} />;
+                  return (
+                    <DagEdge
+                      key={e.v + e.w + e.name}
+                      startNode={startNode}
+                      endNode={endNode}
+                      edge={edge}
+                    />
+                  );
                 })}
               </Layer>
             </Stage>
