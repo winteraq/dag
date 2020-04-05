@@ -2,12 +2,25 @@ import React from 'react';
 import { Group, Rect } from 'react-konva';
 import { Node as DNode } from 'dagre';
 import { getTheme } from '../theme';
-import { Node } from '../types';
+import { Node, onNodeClick, onNodeContextMenu } from '../types';
 import { formatText } from '../util';
 
-export const DagNode: React.FC<{ node: DNode<Node> }> = ({ node }) => {
+export const DagNode: React.FC<{
+  node: DNode<Node>;
+  onClick?: onNodeClick;
+  onContextMenu?: onNodeContextMenu;
+}> = ({ node, onContextMenu, onClick }) => {
   return (
-    <Group x={node.x - node.width / 2} y={node.y - node.height / 2}>
+    <Group
+      x={node.x - node.width / 2}
+      y={node.y - node.height / 2}
+      onClick={(e) => {
+        onClick && onClick(e, node);
+      }}
+      onContextMenu={(e) => {
+        onContextMenu && onContextMenu(e, node);
+      }}
+    >
       <Rect
         cornerRadius={getTheme().nodeBorderRadio}
         fill={getTheme(`${node.type || 'secondary'}Bg`)}

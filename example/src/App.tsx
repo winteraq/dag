@@ -6,7 +6,6 @@ function App() {
   return (
     <div className="App">
       <Dag
-        text="sss"
         edges={[
           {
             start: '1',

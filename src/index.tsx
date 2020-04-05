@@ -1,22 +1,22 @@
 import './styles.css';
 import Measure from 'react-measure';
 import * as React from 'react';
-import { Stage, Layer, Text, Group, Path } from 'react-konva';
+import { Stage, Layer } from 'react-konva';
 import { graphlib, layout } from 'dagre';
+import Konva from 'konva';
 import _ from 'lodash';
 import { isGroup } from './contants';
-import { getPathData } from './util';
-import { Arrow } from './shape/arrows';
-import { Edge, GroupBy, Node } from './types';
+import { Edge, GroupBy, Node, onNodeClick, onNodeContextMenu } from './types';
 import { DagNode } from './shape/node';
+import { DagEdge } from './shape/edge';
 import { DagGroupNode } from './shape/groupNode';
-import Konva from 'konva';
 
 type Props = {
-  text: string;
   edges: Edge[];
   nodes: Node[];
   groupBy?: GroupBy;
+  onNodeClick?: onNodeClick;
+  onNodeContextMenu?: onNodeContextMenu;
 };
 
 type State = {
@@ -153,8 +153,6 @@ export default class Dag extends React.Component<Props, State> {
   };
 
   render() {
-    console.log('xxx');
-    const { text } = this.props;
     const { dimensions } = this.state;
     return (
       <Measure
@@ -179,7 +177,6 @@ export default class Dag extends React.Component<Props, State> {
               draggable
             >
               <Layer>
-                <Text text={text} />
                 {this.graph.nodes().map((v) => {
                   const node = this.graph.node(v);
                   console.log(node);
@@ -187,38 +184,20 @@ export default class Dag extends React.Component<Props, State> {
                   if (node[isGroup]) {
                     return <DagGroupNode key={v} node={node} groupBy={this.props.groupBy!} />;
                   }
-                  return <DagNode key={v} node={node} />;
+                  return (
+                    <DagNode
+                      key={v}
+                      node={node}
+                      onContextMenu={this.props.onNodeContextMenu}
+                      onClick={this.props.onNodeClick}
+                    />
+                  );
                 })}
                 {this.graph.edges().map((e) => {
                   const edge = this.graph.edge(e);
                   const startNode = this.graph.node(e.v);
                   const endNode = this.graph.node(e.w);
-                  const points = [
-                    { x: startNode.x + startNode.width / 2, y: startNode.y },
-                    ...edge.points.slice(1, -1),
-                    { x: endNode.x - endNode.width / 2, y: endNode.y },
-                  ];
-                  const endPoint = points[edge.points.length - 1],
-                    pts = points[edge.points.length - 2];
-                  const x = Math.abs(endPoint.x - pts.x);
-                  const y = Math.abs(endPoint.y - pts.y);
-                  // 斜边长
-                  const z = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-                  // 弧度
-                  const radina =
-                    Math.abs(endPoint.x - pts.x) > Math.abs(endPoint.y - pts.y)
-                      ? Math.acos(x / z)
-                      : Math.asin(y / z);
-                  console.log(e, edge.points, endPoint, pts, radina);
-
-                  // 角度
-                  const angle = 180 / (Math.PI / radina);
-                  return (
-                    <Group key={e.v + e.w + e.name}>
-                      <Path data={getPathData(points)} stroke="#04c0c7" strokeWidth={4} />
-                      <Arrow angle={-angle} x={endPoint.x} y={endPoint.y - 5} />
-                    </Group>
-                  );
+                  return <DagEdge key={e.v + e.w + e.name} startNode={startNode} endNode={endNode} edge={edge} />;
                 })}
               </Layer>
             </Stage>

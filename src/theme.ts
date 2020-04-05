@@ -19,6 +19,8 @@ let _theme = {
   groupBorder: '#4660ef',
   groupBg: '#4660ef',
   groupColor: '#ffffff',
+  edgeColor: '#a8b6c7',
+  edgeDisableColor: '#d5dadf',
   nodeDot: {
     hive: '#33d6cc',
     clickhouse: '#f5f6fa',

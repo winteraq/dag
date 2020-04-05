@@ -1,3 +1,6 @@
+import Konva from 'konva';
+import { Node as DNode } from 'dagre';
+
 export type Node = {
   id: string;
   [key: string]: any;
@@ -9,3 +12,9 @@ export type GroupBy = {
   key: string;
   label: string;
 };
+
+export type onNodeClick = (evt: Konva.KonvaEventObject<MouseEvent>, node: DNode<Node>) => void;
+export type onNodeContextMenu = (
+  evt: Konva.KonvaEventObject<PointerEvent>,
+  node: DNode<Node>
+) => void;
