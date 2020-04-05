@@ -31,6 +31,7 @@ type Props = {
   onNodeContextMenu?: onNodeContextMenu;
   onNodeHover?: onNodeHover;
   onNodeOutHover?: onNodeOutHover;
+  searchKey?: string;
 };
 
 type State = {
@@ -278,6 +279,7 @@ export default class Dag extends React.Component<Props, State> {
                       onContextMenu={this.props.onNodeContextMenu}
                       onClick={this.props.onNodeClick}
                       activeNode={this.props.activeNode}
+                      searchKey={this.props.searchKey}
                     />
                   );
                 })}

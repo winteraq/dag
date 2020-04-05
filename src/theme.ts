@@ -24,6 +24,8 @@ let _theme = {
   activeBg: '#ffffff',
   activeBorder: '#8b9dff',
   activeBorderRadio: [2, 2, 2, 2],
+  searchBg: '#ffe95b',
+  searchColor: '#282f38',
   groupBorder: '#4660ef',
   groupBg: '#4660ef',
   groupColor: '#ffffff',
@@ -31,6 +33,7 @@ let _theme = {
   edgeWidth: 1.5,
   disableedgeColor: '#d5dadf',
   activeNodeColor: '#416eff',
+  fontFamily: 'Ubuntu Mono, Tahoma',
   nodeDot: {
     hive: '#33d6cc',
     clickhouse: '#f5f6fa',

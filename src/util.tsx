@@ -1,6 +1,7 @@
 import React from 'react';
-import { Text } from 'react-konva';
+import { Label, Tag, Text } from 'react-konva';
 import { curveBasis, line } from 'd3-shape';
+import { getTheme } from './theme';
 
 const canvas = document.createElement('canvas');
 canvas.width = 300;
@@ -14,34 +15,34 @@ export const measureText = function (text: string) {
   return ctx!.measureText(text).width;
 };
 
-export const formatText = function (node: any, color: string) {
-  if (!node.label || typeof node.label === 'string') {
-    return (
-      <Text
-        text={`${node.label}`}
-        fontSize={12}
-        fill={color}
-        fontFamily={'Ubuntu Mono, Tahoma'}
-      />
-    );
+export const formatText = function (label: any, color: string, searchKey?: string) {
+  const { searchBg, searchColor, fontFamily } = getTheme();
+  if (!searchKey) {
+    return <Text text={`${label}`} fontSize={12} fill={color} fontFamily={fontFamily} />;
   } else {
+    const labels: any[] = [];
     let x = 0;
-    return node.label.map((item: number, index: number) => {
-      const text = typeof item === 'string' ? item : item[0];
-      const attr = typeof item === 'string' ? { fill: color } : item[1] || {};
-      let tNode = (
+    label.split(searchKey).forEach((item: string, index: number) => {
+      labels.push(
         <Text
-          fontSize={12}
           x={x}
-          key={index}
-          text={text}
-          fill={attr.fill}
-          fontFamily={'Ubuntu Mono, Tahoma'}
+          key={`${index}-1`}
+          text={item}
+          fontSize={12}
+          fill={color}
+          fontFamily={fontFamily}
         />
       );
-      x += measureText(text);
-      return tNode;
+      x += measureText(item);
+      labels.push(
+        <Label x={x} key={`${index}-2`}>
+          <Tag fill={searchBg} />
+          <Text fontSize={12} fill={searchColor} text={searchKey} fontFamily={fontFamily} />
+        </Label>
+      );
+      x += measureText(searchKey);
     });
+    return labels.slice(0, labels.length - 1);
   }
 };
 

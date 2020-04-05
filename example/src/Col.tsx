@@ -53,35 +53,35 @@ function App() {
           {
             id: '1',
             name: '1',
-            label: '1',
+            label: 'moring',
             columns: [
-              { id: '1', label: '1' },
-              { id: '2', label: '2' },
+              { id: '1', label: 'nihao' },
+              { id: '2', label: 'moring' },
             ],
           },
           {
             id: '2',
             name: '1',
-            label: '2',
+            label: 'nihao',
             columns: [
-              { id: '1', label: '1' },
-              { id: '2', label: '2' },
-              { id: '3', label: '3' },
+              { id: '1', label: 'nihao' },
+              { id: '2', label: 'moring' },
+              { id: '3', label: 'hello' },
             ],
           },
           {
             id: '3',
             name: '2',
-            label: '3',
+            label: 'hello',
             columns: [
-              { id: '1', label: '1' },
+              { id: '1', label: 'hello' },
               { id: '2', label: '2' },
             ],
           },
           {
             id: '4',
             name: '2',
-            label: '4',
+            label: '42345678909876543245678987654324567890987654345678987654345t6y78',
             columns: [
               { id: '1', label: '1' },
               { id: '2', label: '2' },
@@ -106,6 +106,7 @@ function App() {
         type={'column'}
         primaryNode={{ id: '2' }}
         activeNode={{ id: '2', columnId: '2' }}
+        searchKey={"hello"}
       />
     </div>
   );

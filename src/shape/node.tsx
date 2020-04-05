@@ -3,7 +3,7 @@ import { Group, Rect } from 'react-konva';
 import { Node as DNode } from 'dagre';
 import { getTheme } from '../theme';
 import { Node, onNodeHover, onNodeClick, onNodeContextMenu, onNodeOutHover } from '../types';
-import { formatText } from '../util';
+import { fittingString, formatText } from '../util';
 
 export const DagNode: React.FC<{
   node: DNode<Node>;
@@ -12,8 +12,9 @@ export const DagNode: React.FC<{
   onHover?: onNodeHover;
   onOutHover?: onNodeOutHover;
   activeNode?: Node;
+  searchKey?: string;
   type: string;
-}> = ({ type, node, onContextMenu, onClick, onHover, onOutHover }) => {
+}> = ({ type, node, onContextMenu, onClick, onHover, onOutHover, searchKey }) => {
   const nodeOnHover = useRef(false);
   const onMouseEnter = onHover
     ? useCallback(() => {
@@ -31,6 +32,7 @@ export const DagNode: React.FC<{
         nodeOnHover.current = false;
       }, [])
     : undefined;
+  const { nodeWidth } = getTheme();
   return (
     <Group
       x={node.x - node.width / 2}
@@ -65,7 +67,11 @@ export const DagNode: React.FC<{
                 x={18}
                 y={getTheme().nodeHeight * (index + 1) + getTheme().halfNodeHeight - 6}
               >
-                {formatText(col, getTheme(`${col.$state$ || node.$state$}ColumnColor`))}
+                {formatText(
+                  fittingString(col.label, nodeWidth - 20, 12),
+                  getTheme(`${col.$state$ || node.$state$}ColumnColor`),
+                  searchKey
+                )}
               </Group>
             );
           })}
@@ -88,7 +94,11 @@ export const DagNode: React.FC<{
         y={getTheme().halfNodeHeight - 3}
       />
       <Group x={18} y={getTheme().halfNodeHeight - 6}>
-        {formatText(node, getTheme(`${node.$state$}Color`))}
+        {formatText(
+          fittingString(node.label, nodeWidth - 20, 12),
+          getTheme(`${node.$state$}Color`),
+          searchKey
+        )}
       </Group>
     </Group>
   );
