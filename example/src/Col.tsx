@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Dag from '@library';
 
 function App() {
+  const [activeNode, setActiveNode] = useState<{ id: string; columnId?: string } | undefined>(
+    undefined
+  );
+  console.log('activeNode', activeNode);
+
   return (
     <div className="App">
       <Dag
@@ -105,10 +110,20 @@ function App() {
         }}
         type={'column'}
         primaryNode={{ id: '2' }}
-        activeNode={{ id: '2', columnId: '2' }}
+        activeNode={activeNode}
         searchKey={'hello'}
         onNodeClick={(e, node, column) => {
           console.log(e, node, column);
+          if (node.id === activeNode?.id) {
+            if (activeNode.columnId === column?.id) {
+              setActiveNode(undefined);
+              return;
+            }
+          }
+          setActiveNode({
+            id: node.id,
+            columnId: column?.id,
+          });
         }}
       />
     </div>
