@@ -2,7 +2,14 @@ import React, { useCallback, useRef } from 'react';
 import { Group, Rect } from 'react-konva';
 import { Node as DNode } from 'dagre';
 import { getTheme } from '../theme';
-import { Node, onNodeHover, onNodeClick, onNodeContextMenu, onNodeOutHover } from '../types';
+import {
+  Node,
+  onNodeHover,
+  onNodeClick,
+  onNodeContextMenu,
+  onNodeOutHover,
+  ActiveNode,
+} from '../types';
 import { fittingString, formatText } from '../util';
 import { Stage } from 'react-konva';
 
@@ -12,7 +19,7 @@ export const DagNode: React.FC<{
   onContextMenu?: onNodeContextMenu;
   onHover?: onNodeHover;
   onOutHover?: onNodeOutHover;
-  activeNode?: Node;
+  activeNode?: ActiveNode;
   searchKey?: string;
   stage?: Stage;
   type: string;

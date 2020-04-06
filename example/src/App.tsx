@@ -1,5 +1,5 @@
 import React from 'react';
-import Dag from '@library';
+import { Dag } from '@library';
 
 function App() {
   return (

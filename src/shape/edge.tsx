@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Group, Path, Arrow } from 'react-konva';
 import { GraphEdge, Node as DNode } from 'dagre';
 import { getTheme } from '../theme';
-import { Node } from '../types';
+import { ActiveNode, Node } from '../types';
 import { getPathData } from '../util';
 import { RingEdge } from './ringEdge';
 
@@ -40,7 +40,7 @@ export const DagEdge: React.FC<{
   endNode: DNode<Node>;
   edge: GraphEdge;
   type: string;
-  activeNode?: Node;
+  activeNode?: ActiveNode;
 }> = ({ startNode, endNode, edge, type }) => {
   const edgeColor = getTheme(`${edge.$state$}edgeColor`);
   // console.log('edge xxx', startNode, endNode, edge);

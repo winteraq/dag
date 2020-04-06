@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import Dag from '@library';
+import { Dag } from '@library';
 
 function App() {
-  const [activeNode, setActiveNode] = useState<{ id: string; columnId?: string } | undefined>(
-    undefined
-  );
+  const [activeNode, setActiveNode] = useState<{ id: string; columnId?: string } | undefined>({
+    id: '3',
+    columnId: '1',
+  });
   console.log('activeNode', activeNode);
 
   return (
@@ -27,7 +28,7 @@ function App() {
             start: '3',
             end: '3',
             startCol: '1',
-            endCol: '2',
+            endCol: '1',
           },
           {
             start: '1',
@@ -77,7 +78,7 @@ function App() {
           {
             id: '3',
             name: '2',
-            label: 'hello',
+            label: 'hello title',
             columns: [
               { id: '1', label: 'hello' },
               { id: '2', label: '2' },
@@ -86,7 +87,7 @@ function App() {
           {
             id: '4',
             name: '2',
-            label: '42345678909876543245678987654324567890987654345678987654345t6y78',
+            label: '超长的文本被截断了',
             columns: [
               { id: '1', label: '1' },
               { id: '2', label: '2' },

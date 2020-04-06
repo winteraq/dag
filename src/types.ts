@@ -3,6 +3,7 @@ import { Node as DNode } from 'dagre';
 
 export type Node = {
   id: string;
+  label: string;
   [key: string]: any;
   style?: any;
   columns?: any[];
@@ -29,3 +30,5 @@ export type Point = {
   x: number;
   y: number;
 };
+
+export type ActiveNode ={ id: string; columnId?: string }
