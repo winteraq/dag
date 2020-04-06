@@ -22,7 +22,6 @@ const IndexPage = () => {
       }
     }
   `);
-  console.log(data);
   return (
     <IndexLayout>
       <Page>
