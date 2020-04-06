@@ -32,6 +32,7 @@ type Props = {
   onNodeContextMenu?: onNodeContextMenu;
   onNodeHover?: onNodeHover;
   onNodeOutHover?: onNodeOutHover;
+  onStageClick?: (evt: Konva.KonvaEventObject<MouseEvent>) => void;
   searchKey?: string;
 };
 
@@ -272,6 +273,9 @@ export class Dag extends React.Component<Props, State> {
               onWheel={this.onWheel}
               width={dimensions.width}
               height={dimensions.height}
+              onClick={(evt) =>
+                evt.evt.button === 0 && this.props.onStageClick && this.props.onStageClick(evt)
+              }
               dragBoundFunc={function (pos) {
                 return {
                   x: pos.x,

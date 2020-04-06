@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
+import IndexLayout from '../layouts';
 import { Dag } from '@library';
+import { useState } from 'react';
 
-function App() {
+const IndexPage = () => {
   const [activeNode, setActiveNode] = useState<{ id: string; columnId?: string } | undefined>({
     id: '4',
     columnId: '1',
   });
-  console.log('activeNode', activeNode);
-
   return (
-    <div className="App">
+    <IndexLayout>
       <Dag
         edges={[
           {
@@ -113,6 +113,9 @@ function App() {
         primaryNode={{ id: '2' }}
         activeNode={activeNode}
         searchKey={'hello'}
+        onStageClick={() => {
+          setActiveNode(undefined);
+        }}
         onNodeClick={(e, node, column) => {
           console.log(e, node, column);
           if (node.id === activeNode?.id) {
@@ -127,8 +130,8 @@ function App() {
           });
         }}
       />
-    </div>
+    </IndexLayout>
   );
-}
+};
 
-export default App;
+export default IndexPage;

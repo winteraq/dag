@@ -1,44 +1,94 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center">
+  <a href="https://www.gatsbyjs.org">
+    <img alt="Gatsby" src="https://www.gatsbyjs.org/monogram.svg" width="60" />
+  </a>
+</p>
+<h1 align="center">
+  gatsby-starter-typescript-plus
+</h1>
 
-## Available Scripts
+> A starter kit for TypeScript-based Gatsby projects with sensible defaults.
 
-In the project directory, you can run:
+This is a starter kit for [Gatsby.js](https://www.gatsbyjs.org/) websites written in TypeScript. It includes the bare essentials for you to get started (styling, Markdown parsing, minimal toolset).
 
-### `npm start`
+## 🗒️ Features
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- TypeScript
+- ESLint (with custom ESLint rules)
+- Markdown rendering with Remark
+- Basic component structure
+- Styling with [emotion](https://emotion.sh/)
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## 🚀 Quick start
 
-### `npm test`
+> A nodejs >= 6.0.0 setup with [yarn](https://yarnpkg.com/) is recommended.
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1.  **Create a Gatsby site.**
 
-### `npm run build`
+    Install `gatsby-cli` package globally on your machine.
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    ```bash
+    # using NPM
+    npm install -g gatsby-cli
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+    # using YARN
+    yarn global add gatsby-cli
+    ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    Use the `gatsby-cli` to create a new site and install its dependencies.
 
-### `npm run eject`
+    ```bash
+    gatsby new project-name https://github.com/resir014/gatsby-starter-typescript-plus
+    ```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+2.  **Start developing.**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    Move to project's directory.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+    ```bash
+    cd project-name/
+    ```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+    Start your site.
 
-## Learn More
+    ```bash
+    # using npm
+    npm start
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+    # using yarn
+    yarn start
+    ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+    Open source code using your favorite IDE/Text editor and navigate to `src/` directory, this is where your application live.
+
+3.  **Build your application for production.**
+
+    Once you're finished, you can make production build of your app using:
+
+    ```bash
+    # using npm
+    npm run build
+
+    # using yarn
+    yarn build
+    ```
+
+4.  **Deploy your app to Github pages!**
+
+    After building your application in step 3, you're ready to publish your app and go online!
+
+    ```bash
+    # using npm
+    npm run deploy
+
+    # using yarn
+    yarn deploy
+    ```
+
+## ❤️ Credits
+
+Built with [Gatsby](https://www.gatsbyjs.org/) - the blazing-fast static site generator for [React](https://facebook.github.io/react/).
+
+## 💫 Deploy
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/resir014/gatsby-starter-typescript-plus)
