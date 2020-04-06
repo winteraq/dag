@@ -82,7 +82,6 @@ export class Dag extends React.Component<Props, State> {
     const { nodeHeight, nodeWidth } = getTheme();
     nodes.forEach((node) => {
       const l = type === 'column' && node.columns?.length ? node.columns?.length + 1 : 1;
-      // 节点遍历的时候不需要设置列状态
       this.setNode(
         {
           label: node.id,
@@ -91,9 +90,10 @@ export class Dag extends React.Component<Props, State> {
           $state$,
           ...node,
         },
-        $state$,
+        node.id === activeNode?.id ? 'active' : $state$,
         type,
-        primaryNode
+        primaryNode,
+        node.id === activeNode?.id ? activeNode?.columnId : undefined
       );
     });
     edges.forEach((edge: Edge, index) => {
@@ -155,14 +155,13 @@ export class Dag extends React.Component<Props, State> {
     primaryNode?: { id: string },
     selectColId?: string
   ) {
-    type === 'column' &&
-      !!selectColId &&
-      node.columns?.forEach((col) => {
-        console.log(col.id === selectColId, col.id, selectColId, node.label, $state$);
+    if (type === 'column' && !!selectColId && Array.isArray(node.columns)) {
+      node.columns.forEach((col) => {
         if (col.id === selectColId) {
           col.$state$ = $state$;
         }
       });
+    }
     if (primaryNode?.id && primaryNode?.id === node.id) {
       this.graph.setNode(node.id, { ...node, $state$: 'primary' });
     } else {
@@ -282,7 +281,7 @@ export class Dag extends React.Component<Props, State> {
               draggable
             >
               <Layer ref={this.layer}>
-                {/*先遍历node，这样才能提前索引 column*/}
+                {/* 先遍历node，这样才能提前索引 column */}
                 {this.graph.nodes().map((v) => {
                   const node = this.graph.node(v);
                   // @ts-ignore

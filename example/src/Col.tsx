@@ -3,7 +3,7 @@ import { Dag } from '@library';
 
 function App() {
   const [activeNode, setActiveNode] = useState<{ id: string; columnId?: string } | undefined>({
-    id: '3',
+    id: '4',
     columnId: '1',
   });
   console.log('activeNode', activeNode);
