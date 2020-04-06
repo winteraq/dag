@@ -1,7 +1,7 @@
 'use strict';
 const pkg = require('../package');
 module.exports = {
-  pathPrefix: '/my_project',
+  pathPrefix: '/dag',
   siteMetadata: {
     title: `${pkg.name}`,
     description: `${pkg.name} demo website`,
