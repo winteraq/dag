@@ -134,6 +134,7 @@ export class Dag extends React.Component<Props, State> {
     });
     if (groupBy) {
       const res = _.groupBy(nodes, groupBy.key);
+      console.log('res', res);
       Object.keys(res).forEach((key) => {
         const groupId = `$group_${key}$`;
         this.graph.setNode(groupId, {
