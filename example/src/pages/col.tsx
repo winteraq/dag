@@ -15,13 +15,14 @@ const IndexPage = () => {
     text: string;
     scale: number;
   } | null>(null);
-  const onNodeHover = useCallback((node, rect, scale) => {
-    console.log('===>', node, rect, scale);
+  const onNodeHover = useCallback((node, pos, stage) => {
+    console.log('===>', node, pos);
+    const scale = stage.scaleX();
     setHoverInfo({
-      scale: scale,
+      scale,
       text: node.label,
-      left: node.x * scale + rect!.x,
-      top: rect!.y + node.y * scale - (node.height * scale) / 2,
+      left: pos.x + (node.width / 2) * scale,
+      top: pos.y,
     });
   }, []);
   const onNodeOutHover = useCallback(() => {
@@ -313,40 +314,39 @@ const IndexPage = () => {
           });
         }}
       />
-      {hoverInfo && (
+      <div
+        css={css`
+          left: ${hoverInfo?.left}px;
+          top: ${hoverInfo?.top}px;
+          position: absolute;
+          background-color: #282f38;
+          padding: 8px 12px;
+          color: white;
+          font-size: 14px;
+          border-radius: 2px;
+          //scale(${hoverInfo?.scale})
+          transform: translate(-50%, calc(-100% - 5px)) ;
+        `}
+      >
         <div
           css={css`
-            left: ${hoverInfo!.left}px;
-            top: ${hoverInfo!.top}px;
+            border: solid transparent;
+            content: '';
+            height: 8px;
+            width: 8px;
             position: absolute;
+            left: 0;
+            display: block;
+            box-sizing: border-box;
+            transform: rotate(45deg);
+            transform-origin: 50% -50% 0;
+            bottom: -5px;
+            margin-left: 50%;
             background-color: #282f38;
-            padding: 8px 12px;
-            color: white;
-            font-size: 14px;
-            border-radius: 2px;
-            transform: translate(-50%, -50%) scale(${hoverInfo.scale});
           `}
-        >
-          <div
-            css={css`
-              border: solid transparent;
-              content: '';
-              height: 8px;
-              width: 8px;
-              position: absolute;
-              left: 0;
-              display: block;
-              box-sizing: border-box;
-              transform: rotate(45deg);
-              transform-origin: 50% -50% 0;
-              bottom: -5px;
-              margin-left: 50%;
-              background-color: #282f38;
-            `}
-          />
-          {hoverInfo!.text}
-        </div>
-      )}
+        />
+        {hoverInfo?.text}
+      </div>
     </IndexLayout>
   );
 };
