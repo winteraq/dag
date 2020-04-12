@@ -135,7 +135,7 @@ export class Dag extends React.Component<Props, State> {
     if (groupBy) {
       const res = _.groupBy(nodes, groupBy.key);
       console.log('res', res);
-      Object.keys(res).forEach((key) => {
+      Object.keys(res).forEach((key: string) => {
         const groupId = `$group_${key}$`;
         this.graph.setNode(groupId, {
           label: key,
@@ -312,6 +312,8 @@ export class Dag extends React.Component<Props, State> {
                       node={node}
                       onContextMenu={this.props.onNodeContextMenu}
                       onClick={this.props.onNodeClick}
+                      onHover={this.props.onNodeHover}
+                      onOutHover={this.props.onNodeOutHover}
                       activeNode={this.props.activeNode}
                       searchKey={this.props.searchKey}
                       stage={this.stage.current!}

@@ -8,6 +8,7 @@ module.exports = {
     'plugin:react/recommended',
   ],
   rules: {
+    camelcase: 'off',
     'no-unused-vars': 'off',
     '@typescript-eslint/explicit-function-return-type': 0,
     '@typescript-eslint/indent': 'off',

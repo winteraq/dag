@@ -26,13 +26,13 @@ export const DagNode: React.FC<{
 }> = ({ type, node, onContextMenu, onClick, onHover, onOutHover, searchKey, stage }) => {
   const nodeOnHover = useRef(false);
   const onMouseEnter = onHover
-    ? useCallback((e) => {
-        console.log(e);
+    ? useCallback(() => {
+        // console.log(e);
         if (!nodeOnHover.current) {
-          onHover && onHover(node);
+          onHover && onHover(node, stage!.getStage().getClientRect({}), stage!.getStage().scaleX());
         }
         nodeOnHover.current = true;
-      }, [])
+      }, [onHover, node, stage])
     : undefined;
   const onMouseLeave = onOutHover
     ? useCallback(() => {
@@ -40,7 +40,7 @@ export const DagNode: React.FC<{
           onOutHover && onOutHover(node);
         }
         nodeOnHover.current = false;
-      }, [])
+      }, [onOutHover, node])
     : undefined;
   const { nodeWidth } = getTheme();
   return (

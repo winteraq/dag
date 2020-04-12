@@ -10,7 +10,7 @@ export const DagGroupNode: React.FC<{ node: DNode<Node>; groupBy: GroupBy }> = (
   groupBy,
 }) => {
   // console.log('node',node)
-  const text = `${groupBy.label}: ${node[groupBy.key]}`;
+  const text = `${groupBy.label}: ${node[groupBy.key] === 'null' ? '其他' : node[groupBy.key]}`;
   return (
     <Group listening={false} x={node.x - node.width / 2} y={node.y - node.height / 2}>
       <Group x={0} y={-27}>
