@@ -62,7 +62,7 @@ export class Dag extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.setGraph(props);
+    this.setGraph({ ...props, nodes: _.cloneDeep(props.nodes), edges: _.cloneDeep(props.edges) });
   }
 
   setGraph({ nodes, edges, type, groupBy, activeNode, primaryNode }: Props) {
@@ -180,8 +180,20 @@ export class Dag extends React.Component<Props, State> {
     if (this.props === nextProps && this.state === nextState) {
       return false;
     }
-    if (this.props.nodes !== nextProps.nodes || this.props.edges !== nextProps.edges) {
-      this.setGraph(nextProps);
+    if (
+      this.props.type !== nextProps.type ||
+      this.props.searchKey !== nextProps.searchKey ||
+      JSON.stringify(this.props.activeNode) !== JSON.stringify(nextProps.activeNode) ||
+      JSON.stringify(this.props.groupBy) !== JSON.stringify(nextProps.groupBy) ||
+      JSON.stringify(this.props.primaryNode) !== JSON.stringify(nextProps.primaryNode) ||
+      !_.isEqual(this.props.nodes, nextProps.nodes) ||
+      !_.isEqual(this.props.edges, nextProps.edges)
+    ) {
+      this.setGraph({
+        ...nextProps,
+        nodes: _.cloneDeep(nextProps.nodes),
+        edges: _.cloneDeep(nextProps.edges),
+      });
     }
     return true;
   }
@@ -189,8 +201,8 @@ export class Dag extends React.Component<Props, State> {
   componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>) {
     if (
       prevState.dimensions !== this.state.dimensions ||
-      this.props.nodes !== prevProps.nodes ||
-      this.props.edges !== prevProps.edges
+      !_.isEqual(this.props.nodes, prevProps.nodes) ||
+      !_.isEqual(this.props.edges, prevProps.edges)
     ) {
       this.fitView();
     }

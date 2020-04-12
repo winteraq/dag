@@ -7,21 +7,19 @@
 ## Install
 
 ```bash
-npm install --save dag
+npm install --save relation-dagre
 ```
 
 ## Usage
 
 ```tsx
-import * as React from 'react'
+import * as React from 'react';
 
-import MyComponent from 'dag'
+import MyComponent from 'relation-dagre';
 
 class Example extends React.Component {
-  render () {
-    return (
-      <MyComponent />
-    )
+  render() {
+    return <MyComponent />;
   }
 }
 ```
