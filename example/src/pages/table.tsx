@@ -51,6 +51,12 @@ const IndexPage = () => (
         label: '负责人',
       }}
       activeNode={{ id: '2' }}
+      onNodeClick={() => {
+        console.log('node click');
+      }}
+      onStageClick={() => {
+        console.log('stage click');
+      }}
     />
   </IndexLayout>
 );

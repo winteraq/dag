@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import { Group, Rect } from 'react-konva';
+import { Group, Rect, Stage } from 'react-konva';
 import { Node as DNode } from 'dagre';
 import { getTheme } from '../theme';
 import {
@@ -11,7 +11,6 @@ import {
   ActiveNode,
 } from '../types';
 import { fittingString, formatText } from '../util';
-import { Stage } from 'react-konva';
 
 export const DagNode: React.FC<{
   node: DNode<Node>;
@@ -49,9 +48,6 @@ export const DagNode: React.FC<{
       ref={nodeRef}
       x={node.x - node.width / 2}
       y={node.y - node.height / 2}
-      onClick={(e) => {
-        onClick && onClick(e, node);
-      }}
       onContextMenu={(e) => {
         onContextMenu && onContextMenu(e, node);
       }}
@@ -115,6 +111,10 @@ export const DagNode: React.FC<{
         </>
       )}
       <Rect
+        onClick={(e) => {
+          e.cancelBubble = true;
+          onClick && onClick(e, node);
+        }}
         cornerRadius={getTheme().nodeBorderRadio}
         fill={getTheme(`${node.$state$}Bg`)}
         stroke={getTheme(`${node.$state$}Border`)}
@@ -130,7 +130,7 @@ export const DagNode: React.FC<{
         x={8}
         y={getTheme().halfNodeHeight - 3}
       />
-      <Group x={18} y={getTheme().halfNodeHeight - 6}>
+      <Group listening={false} x={18} y={getTheme().halfNodeHeight - 6}>
         {formatText(
           fittingString(node.label, nodeWidth - 20, 12),
           getTheme(`${node.$state$}Color`),
