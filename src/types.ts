@@ -20,6 +20,11 @@ export type onNodeClick = (
   node: DNode<Node>,
   column?: Node
 ) => void;
+export type NodeAttr = (
+  node: DNode<Node>
+) => {
+  highLight?: boolean;
+};
 export type onNodeContextMenu = (
   evt: Konva.KonvaEventObject<PointerEvent>,
   node: DNode<Node>

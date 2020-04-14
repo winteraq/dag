@@ -11,6 +11,7 @@ import {
   Edge,
   GroupBy,
   Node,
+  NodeAttr,
   onNodeClick,
   onNodeContextMenu,
   onNodeHover,
@@ -32,6 +33,7 @@ type Props = {
   onNodeContextMenu?: onNodeContextMenu;
   onNodeHover?: onNodeHover;
   onNodeOutHover?: onNodeOutHover;
+  nodeAttr?: NodeAttr;
   onStageClick?: (evt: Konva.KonvaEventObject<MouseEvent>) => void;
   searchKey?: string;
 };
@@ -219,6 +221,7 @@ export class Dag extends React.Component<Props, State> {
       skipTransform: true,
     });
     const radio = Math.min(width / stageWidth, height / stageHeight) - 0.15;
+    console.log(radio, width, height, 'stage', stageWidth, stageHeight);
     if (radio < 1) {
       stage.getStage().scale({ x: radio, y: radio });
       const mousePointTo = {
@@ -227,6 +230,7 @@ export class Dag extends React.Component<Props, State> {
       };
       stage.position(mousePointTo);
     } else {
+      stage.getStage().scale({ x: 1, y: 1 });
       const mousePointTo = {
         x: width / 2 - stageWidth / 2,
         y: height / 2 - stageHeight / 2,
@@ -311,6 +315,7 @@ export class Dag extends React.Component<Props, State> {
                       key={v}
                       type={this.props.type!}
                       node={node}
+                      nodeAttr={this.props.nodeAttr}
                       onContextMenu={this.props.onNodeContextMenu}
                       onClick={this.props.onNodeClick}
                       onHover={this.props.onNodeHover}

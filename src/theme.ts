@@ -1,6 +1,7 @@
 let _theme = {
   nodeWidth: 158,
   nodeHeight: 28,
+  nodeHighlightBorder: '#004ac9',
   halfNodeWidth: 79,
   halfNodeHeight: 14,
   nodeBorderRadio: [2, 2, 2, 2],

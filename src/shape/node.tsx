@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { Group, Rect, Stage } from 'react-konva';
 import { Node as DNode } from 'dagre';
 import { getTheme } from '../theme';
@@ -9,6 +9,7 @@ import {
   onNodeContextMenu,
   onNodeOutHover,
   ActiveNode,
+  NodeAttr,
 } from '../types';
 import { fittingString, formatText } from '../util';
 
@@ -20,9 +21,10 @@ export const DagNode: React.FC<{
   onOutHover?: onNodeOutHover;
   activeNode?: ActiveNode;
   searchKey?: string;
+  nodeAttr?: NodeAttr;
   stage?: Stage;
   type: string;
-}> = ({ type, node, onContextMenu, onClick, onHover, onOutHover, searchKey, stage }) => {
+}> = ({ nodeAttr, type, node, onContextMenu, onClick, onHover, onOutHover, searchKey, stage }) => {
   const nodeRef = useRef<any>(null);
   const nodeOnHover = useRef(false);
   const onMouseEnter = onHover
@@ -43,6 +45,9 @@ export const DagNode: React.FC<{
       }, [onOutHover, node])
     : undefined;
   const { nodeWidth } = getTheme();
+  const attr = useMemo(() => {
+    return nodeAttr ? nodeAttr(node) : {};
+  }, [nodeAttr, node]);
   return (
     <Group
       ref={nodeRef}
@@ -137,6 +142,17 @@ export const DagNode: React.FC<{
           searchKey
         )}
       </Group>
+      {attr.highLight && (
+        <Rect
+          listening={false}
+          cornerRadius={getTheme().nodeBorderRadio}
+          fill={'rgba(255, 255, 255, 0)'}
+          width={node.width}
+          height={node.height}
+          strokeWidth={2}
+          stroke={getTheme().nodeHighlightBorder}
+        />
+      )}
     </Group>
   );
 };
