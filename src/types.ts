@@ -27,7 +27,9 @@ export type NodeAttr = (
 };
 export type onNodeContextMenu = (
   evt: Konva.KonvaEventObject<PointerEvent>,
-  node: DNode<Node>
+  node: DNode<Node>,
+  pos?: { x: number; y: number },
+  stage?: Konva.Stage
 ) => void;
 export type onNodeHover = (
   node: DNode<Node>,

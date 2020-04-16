@@ -54,7 +54,8 @@ export const DagNode: React.FC<{
       x={node.x - node.width / 2}
       y={node.y - node.height / 2}
       onContextMenu={(e) => {
-        onContextMenu && onContextMenu(e, node);
+        onContextMenu &&
+          onContextMenu(e, node, nodeRef.current!.absolutePosition(), stage!.getStage());
       }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}

@@ -57,6 +57,9 @@ const IndexPage = () => {
           label: '负责人',
         }}
         activeNode={{ id: '2' }}
+        onNodeContextMenu={() => {
+          console.log('node context menu');
+        }}
         onNodeClick={() => {
           console.log('node click');
         }}
