@@ -222,21 +222,22 @@ export class Dag extends React.Component<Props, State> {
     });
     const radio = Math.min(width / stageWidth, height / stageHeight);
     console.log(radio, width, height, 'stage', stageWidth, stageHeight);
-    if (radio < 1) {
-      stage.getStage().scale({ x: radio, y: radio });
-      const mousePointTo = {
-        x: width / 2 - (stageWidth * radio) / 2,
-        y: height / 2 - (stageHeight * radio) / 2,
-      };
-      stage.position(mousePointTo);
-    } else {
+    // if (radio < 1) {
+    //   stage.getStage().scale({ x: radio, y: radio });
+    //   const mousePointTo = {
+    //     x: width / 2 - (stageWidth * radio) / 2,
+    //     y: height / 2 - (stageHeight * radio) / 2,
+    //   };
+    //   stage.position(mousePointTo);
+    // }
+    //else {
       stage.getStage().scale({ x: 1, y: 1 });
       const mousePointTo = {
         x: width / 2 - stageWidth / 2,
         y: height / 2 - stageHeight / 2,
       };
       stage.position(mousePointTo);
-    }
+    //}
     stage.batchDraw();
   };
 
