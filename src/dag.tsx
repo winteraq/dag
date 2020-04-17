@@ -60,27 +60,23 @@ export class Dag extends React.Component<Props, State> {
   graph: graphlib.Graph<Node>;
 
   stage = React.createRef<Stage>();
+
   layer = React.createRef<Konva.Layer>();
+
+  edges: Edge[];
+
+  nodes: Node[];
 
   constructor(props: Props) {
     super(props);
-    this.setGraph({ ...props, nodes: _.cloneDeep(props.nodes), edges: _.cloneDeep(props.edges) });
+    this.edges = _.cloneDeep(props.edges);
+    this.nodes = _.cloneDeep(props.nodes);
+    this.setGraph({ ...props });
   }
 
-  setGraph({ nodes, edges, type, groupBy, activeNode, primaryNode }: Props) {
-    this.graph = new graphlib.Graph<Node>({
-      directed: true,
-      multigraph: true,
-      compound: !!groupBy,
-    });
-    this.graph
-      .setGraph({
-        rankdir: 'LR',
-        edgesep: 40,
-      })
-      .setDefaultEdgeLabel(function () {
-        return {};
-      });
+  setGraphWithoutReLayout({ type, activeNode, primaryNode }: Props) {
+    const nodes = this.nodes;
+    const edges = this.edges;
     let $state$ = activeNode ? 'disable' : 'secondary';
     const { nodeHeight, nodeWidth } = getTheme();
     nodes.forEach((node) => {
@@ -100,6 +96,8 @@ export class Dag extends React.Component<Props, State> {
       );
     });
     edges.forEach((edge: Edge, index) => {
+      const edgeName = `${index}`;
+      const graphEdge = this.graph.edge(edge.start, edge.end, edgeName);
       if (activeNode) {
         if (edge.start === activeNode.id || edge.end === activeNode.id) {
           if (
@@ -125,15 +123,45 @@ export class Dag extends React.Component<Props, State> {
               primaryNode,
               type === 'column' ? edge.endCol : edge.end
             );
-            this.graph.setEdge(edge.start, edge.end, { ...edge, $state$: '' }, `${index}`);
+            this.graph.setEdge(
+              edge.start,
+              edge.end,
+              { ...graphEdge, ...edge, $state$: '' },
+              edgeName
+            );
             return;
           }
         }
-        this.graph.setEdge(edge.start, edge.end, { ...edge, $state$: 'disable' }, `${index}`);
+        this.graph.setEdge(
+          edge.start,
+          edge.end,
+          { ...graphEdge, ...edge, $state$: 'disable' },
+          edgeName
+        );
       } else {
-        this.graph.setEdge(edge.start, edge.end, { ...edge, $state$: '' }, `${index}`);
+        this.graph.setEdge(edge.start, edge.end, { ...graphEdge, ...edge, $state$: '' }, edgeName);
       }
     });
+  }
+
+  setGraph({ type, groupBy, activeNode, primaryNode }: Props) {
+    const nodes = this.nodes;
+    this.graph = new graphlib.Graph<Node>({
+      directed: true,
+      multigraph: true,
+      compound: !!groupBy,
+    });
+    this.graph
+      .setGraph({
+        rankdir: 'LR',
+        edgesep: 40,
+        ranksep: Math.max(nodes.length, 50),
+      })
+      .setDefaultEdgeLabel(function () {
+        return {};
+      });
+    // @ts-ignore
+    this.setGraphWithoutReLayout({ type, activeNode, primaryNode });
     if (groupBy) {
       const res = _.groupBy(nodes, groupBy.key);
       console.log('res', res);
@@ -159,17 +187,21 @@ export class Dag extends React.Component<Props, State> {
     primaryNode?: { id: string },
     selectColId?: string
   ) {
-    if (type === 'column' && !!selectColId && Array.isArray(node.columns)) {
+    const graphNode = this.graph.node(node.id) || {};
+    if (type === 'column' && Array.isArray(node.columns)) {
       node.columns.forEach((col) => {
         if (col.id === selectColId) {
           col.$state$ = $state$;
+        } else {
+          col.$state$ = null;
         }
       });
     }
     if (primaryNode?.id && primaryNode?.id === node.id) {
-      this.graph.setNode(node.id, { ...node, $state$: 'primary' });
+      this.graph.setNode(node.id, { ...graphNode, ...node, $state$: 'primary' });
     } else {
       this.graph.setNode(node.id, {
+        ...graphNode,
         ...node,
         // 列视图的时候，节点状态为active的时候，分两种情况，
         // 被激活的column正常蓝色，非active的column还是黑色
@@ -179,23 +211,32 @@ export class Dag extends React.Component<Props, State> {
   }
 
   shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>) {
+    if (this.state !== nextState) {
+      return true;
+    }
     if (this.props === nextProps && this.state === nextState) {
       return false;
     }
     if (
       this.props.type !== nextProps.type ||
+      JSON.stringify(this.props.groupBy) !== JSON.stringify(nextProps.groupBy) ||
+      this.props.nodes !== nextProps.nodes ||
+      this.props.edges !== nextProps.edges
+    ) {
+      if (nextProps.nodes !== this.props.nodes) {
+        this.nodes = _.cloneDeep(nextProps.nodes);
+      }
+      if (nextProps.edges !== this.props.edges) {
+        this.edges = _.cloneDeep(nextProps.edges);
+      }
+      this.setGraph(nextProps);
+    }
+    if (
       this.props.searchKey !== nextProps.searchKey ||
       JSON.stringify(this.props.activeNode) !== JSON.stringify(nextProps.activeNode) ||
-      JSON.stringify(this.props.groupBy) !== JSON.stringify(nextProps.groupBy) ||
-      JSON.stringify(this.props.primaryNode) !== JSON.stringify(nextProps.primaryNode) ||
-      !_.isEqual(this.props.nodes, nextProps.nodes) ||
-      !_.isEqual(this.props.edges, nextProps.edges)
+      JSON.stringify(this.props.primaryNode) !== JSON.stringify(nextProps.primaryNode)
     ) {
-      this.setGraph({
-        ...nextProps,
-        nodes: _.cloneDeep(nextProps.nodes),
-        edges: _.cloneDeep(nextProps.edges),
-      });
+      this.setGraphWithoutReLayout(nextProps);
     }
     return true;
   }
@@ -203,8 +244,8 @@ export class Dag extends React.Component<Props, State> {
   componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>) {
     if (
       prevState.dimensions !== this.state.dimensions ||
-      !_.isEqual(this.props.nodes, prevProps.nodes) ||
-      !_.isEqual(this.props.edges, prevProps.edges)
+      this.props.nodes !== prevProps.nodes ||
+      this.props.edges !== prevProps.edges
     ) {
       this.fitView();
     }
@@ -231,12 +272,12 @@ export class Dag extends React.Component<Props, State> {
     //   stage.position(mousePointTo);
     // }
     //else {
-      stage.getStage().scale({ x: 1, y: 1 });
-      const mousePointTo = {
-        x: width / 2 - stageWidth / 2,
-        y: height / 2 - stageHeight / 2,
-      };
-      stage.position(mousePointTo);
+    stage.getStage().scale({ x: 1, y: 1 });
+    const mousePointTo = {
+      x: width / 2 - stageWidth / 2,
+      y: height / 2 - stageHeight / 2,
+    };
+    stage.position(mousePointTo);
     //}
     stage.batchDraw();
   };
