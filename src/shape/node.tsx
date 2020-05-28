@@ -106,6 +106,7 @@ export const DagNode: React.FC<{
                     }}
                   />
                   {formatText(
+                    col.label,
                     fittingString(col.label, nodeWidth - 20, 12),
                     getTheme(`${col.$state$ || node.$state$}ColumnColor`),
                     searchKey
@@ -138,6 +139,7 @@ export const DagNode: React.FC<{
       />
       <Group listening={false} x={18} y={getTheme().halfNodeHeight - 6}>
         {formatText(
+          node.label,
           fittingString(node.label, nodeWidth - 20, 12),
           getTheme(`${node.$state$}Color`),
           searchKey

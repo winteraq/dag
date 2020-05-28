@@ -46,6 +46,8 @@ const edges = [
     end: '4',
   },
 ];
+
+
 const IndexPage = () => {
   const dag = useRef<Dag>(null);
   const [activeNode, setActiveNode] = useState<{ id: string; columnId?: string } | undefined>({
@@ -58,10 +60,12 @@ const IndexPage = () => {
         ref={dag}
         edges={edges}
         nodes={nodes}
-        groupBy={{
-          key: 'name',
-          label: '负责人',
-        }}
+        // groupBy={{
+        //   key: 'name',
+        //   label: '负责人',
+        // }}
+        searchKey={'eve'}
+        primaryNode={{ id: '0' }}
         activeNode={activeNode}
         onNodeContextMenu={() => {
           console.log('node context menu');

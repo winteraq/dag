@@ -154,8 +154,8 @@ export class Dag extends React.Component<Props, State> {
     this.graph
       .setGraph({
         rankdir: 'LR',
-        edgesep: 40,
-        ranksep: Math.max(nodes.length, 50),
+        edgesep: 20,
+        ranksep: Math.max(nodes.length * 3, 160),
       })
       .setDefaultEdgeLabel(function () {
         return {};
@@ -245,14 +245,60 @@ export class Dag extends React.Component<Props, State> {
     if (
       prevState.dimensions !== this.state.dimensions ||
       this.props.nodes !== prevProps.nodes ||
-      this.props.edges !== prevProps.edges
+      this.props.edges !== prevProps.edges ||
+      this.props.primaryNode?.id !== prevProps.primaryNode?.id
     ) {
+      // if (this.props.primaryNode) {
+      //   this.fitViewByPrimaryNode();
+      // } else {
+      //   this.fitView();
+      // }
       this.fitView();
     }
   }
 
   getStage = () => {
     return this.stage.current!.getStage();
+  };
+
+  getLayer = () => {
+    return this.layer.current!;
+  };
+
+  fitViewByPrimaryNode = () => {
+    const stage = this.getStage();
+    const layerWidth = this.getLayer().getWidth();
+    const layerHeight = this.getLayer().getHeight();
+    const primaryNode = this.graph.node(this.props.primaryNode!.id);
+    const { x, y, height: primaryHeight, width: primaryWidth } = primaryNode;
+    const { width, height } = this.state.dimensions;
+    console.log(x, y, width, height, layerWidth, layerHeight);
+    const { x: stageX, y: stageY, width: stageWidth, height: stageHeight } = stage.getClientRect({
+      skipTransform: true,
+    });
+    const virtualRect = {
+      width: Math.max(x, Math.abs(x - layerWidth)) * 2,
+      height: Math.max(y, Math.abs(y - layerHeight)) * 2,
+    };
+    const radio = Math.min(width / virtualRect.width, height / virtualRect.height);
+    console.log('primaryNode', primaryNode, stageX, stageY);
+    if (radio < 1) {
+      const mousePointTo = {
+        x: width / 2 - (virtualRect.width * radio) / 2,
+        y: height / 2 - (virtualRect.height * radio) / 2,
+      };
+      stage.position(mousePointTo);
+    } else {
+      // stage.getStage().scale({ x: 1, y: 1 });
+      const mousePointTo = {
+        x: width / 2 - virtualRect.width / 2,
+        y: height / 2 - virtualRect.height / 2,
+      };
+      stage.position(mousePointTo);
+    }
+    stage.batchDraw();
+    // stage.getStage().scale({ x: radio, y: radio });
+
   };
 
   fitView = () => {
@@ -263,22 +309,21 @@ export class Dag extends React.Component<Props, State> {
     });
     const radio = Math.min(width / stageWidth, height / stageHeight);
     console.log(radio, width, height, 'stage', stageWidth, stageHeight);
-    // if (radio < 1) {
-    //   stage.getStage().scale({ x: radio, y: radio });
-    //   const mousePointTo = {
-    //     x: width / 2 - (stageWidth * radio) / 2,
-    //     y: height / 2 - (stageHeight * radio) / 2,
-    //   };
-    //   stage.position(mousePointTo);
-    // }
-    //else {
-    stage.getStage().scale({ x: 1, y: 1 });
-    const mousePointTo = {
-      x: width / 2 - stageWidth / 2,
-      y: height / 2 - stageHeight / 2,
-    };
-    stage.position(mousePointTo);
-    //}
+    if (radio < 1) {
+      stage.getStage().scale({ x: radio, y: radio });
+      const mousePointTo = {
+        x: width / 2 - (stageWidth * radio) / 2,
+        y: height / 2 - (stageHeight * radio) / 2,
+      };
+      stage.position(mousePointTo);
+    } else {
+      stage.getStage().scale({ x: 1, y: 1 });
+      const mousePointTo = {
+        x: width / 2 - stageWidth / 2,
+        y: height / 2 - stageHeight / 2,
+      };
+      stage.position(mousePointTo);
+    }
     stage.batchDraw();
   };
 
@@ -307,7 +352,7 @@ export class Dag extends React.Component<Props, State> {
 
   scale = (scale: number) => {
     const stage = this.getStage();
-    if (scale < 0.1) {
+    if (scale < 0.0001) {
       return;
     }
     stage.getStage().scale({ x: scale, y: scale });
