@@ -34,11 +34,11 @@ export const formatText = function (
     );
   } else {
     const labels: any[] = [];
-    let x = 0,
-      currentIndex = 0,
-      items = label.split(searchKey),
-      i = 0,
-      l = items.length;
+    let x = 0;
+    let currentIndex = 0;
+    const items = label.split(searchKey);
+    let i = 0;
+    const l = items.length;
     for (; i < l; i++) {
       const item = items[i];
       currentIndex += item.length;
@@ -81,7 +81,7 @@ export const formatText = function (
       labels.push(
         <Label listening={false} x={x} key={`...`}>
           {i < l - 1 && <Tag fill={searchBg} />}
-          {/*<Tag fill={searchBg} />*/}
+          {/* <Tag fill={searchBg} /> */}
           <Text
             fontSize={12}
             fill={i >= l - 1 ? color : searchColor}
@@ -100,8 +100,8 @@ export const formatText = function (
  * @param {string} str 指定的字符串
  */
 export const calcStrLen = function calcStrLen(str: string) {
-  let len = 0,
-    textWidths = [];
+  let len = 0;
+  const textWidths = [];
   for (let i = 0; i < str.length; i++) {
     if (['i', '1', 'l', ':', '.'].includes(str.charAt(i))) {
       len += 0.5;
@@ -129,14 +129,13 @@ export const fittingString = function fittingString(
   maxWidth: number,
   fontSize: number
 ): number {
-  const fontWidth = fontSize * 1.2; //字号+边距
+  const fontWidth = fontSize * 1.2; // 字号+边距
   maxWidth = maxWidth * 2; // 需要根据自己项目调整
   const { len, textWidths } = calcStrLen(str);
   const width = len * fontWidth;
-  const ellipsis = '…';
   if (width > maxWidth) {
-    let splitLength = Math.floor((width - maxWidth) / fontWidth),
-      i = textWidths.length - 1;
+    let splitLength = Math.floor((width - maxWidth) / fontWidth);
+    let i = textWidths.length - 1;
     for (; i >= 0; i--) {
       const item = textWidths[i];
       splitLength -= item;

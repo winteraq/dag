@@ -114,14 +114,16 @@ export class Dag extends React.Component<Props, State> {
               $state$,
               type,
               primaryNode,
-              type === 'column' ? edge.startCol : edge.start
+              type === 'column' ? edge.startCol : edge.start,
+              true
             );
             this.setNode(
               endNode,
               $state$,
               type,
               primaryNode,
-              type === 'column' ? edge.endCol : edge.end
+              type === 'column' ? edge.endCol : edge.end,
+              true
             );
             this.graph.setEdge(
               edge.start,
@@ -164,7 +166,7 @@ export class Dag extends React.Component<Props, State> {
     this.setGraphWithoutReLayout({ type, activeNode, primaryNode });
     if (groupBy) {
       const res = _.groupBy(nodes, groupBy.key);
-      console.log('res', res);
+      // console.log('res', res);
       Object.keys(res).forEach((key: string) => {
         const groupId = `$group_${key}$`;
         this.graph.setNode(groupId, {
@@ -185,7 +187,8 @@ export class Dag extends React.Component<Props, State> {
     $state$: string,
     type?: string,
     primaryNode?: { id: string },
-    selectColId?: string
+    selectColId?: string,
+    keepState = false
   ) {
     const graphNode = this.graph.node(node.id) || {};
     if (type === 'column' && Array.isArray(node.columns)) {
@@ -193,7 +196,7 @@ export class Dag extends React.Component<Props, State> {
         if (col.id === selectColId) {
           col.$state$ = $state$;
         } else {
-          col.$state$ = null;
+          col.$state$ = keepState ? col.$state$ : null;
         }
       });
     }
@@ -248,11 +251,6 @@ export class Dag extends React.Component<Props, State> {
       this.props.edges !== prevProps.edges ||
       this.props.primaryNode?.id !== prevProps.primaryNode?.id
     ) {
-      // if (this.props.primaryNode) {
-      //   this.fitViewByPrimaryNode();
-      // } else {
-      //   this.fitView();
-      // }
       this.fitView();
     }
   }
@@ -265,42 +263,6 @@ export class Dag extends React.Component<Props, State> {
     return this.layer.current!;
   };
 
-  fitViewByPrimaryNode = () => {
-    const stage = this.getStage();
-    const layerWidth = this.getLayer().getWidth();
-    const layerHeight = this.getLayer().getHeight();
-    const primaryNode = this.graph.node(this.props.primaryNode!.id);
-    const { x, y, height: primaryHeight, width: primaryWidth } = primaryNode;
-    const { width, height } = this.state.dimensions;
-    console.log(x, y, width, height, layerWidth, layerHeight);
-    const { x: stageX, y: stageY, width: stageWidth, height: stageHeight } = stage.getClientRect({
-      skipTransform: true,
-    });
-    const virtualRect = {
-      width: Math.max(x, Math.abs(x - layerWidth)) * 2,
-      height: Math.max(y, Math.abs(y - layerHeight)) * 2,
-    };
-    const radio = Math.min(width / virtualRect.width, height / virtualRect.height);
-    console.log('primaryNode', primaryNode, stageX, stageY);
-    if (radio < 1) {
-      const mousePointTo = {
-        x: width / 2 - (virtualRect.width * radio) / 2,
-        y: height / 2 - (virtualRect.height * radio) / 2,
-      };
-      stage.position(mousePointTo);
-    } else {
-      // stage.getStage().scale({ x: 1, y: 1 });
-      const mousePointTo = {
-        x: width / 2 - virtualRect.width / 2,
-        y: height / 2 - virtualRect.height / 2,
-      };
-      stage.position(mousePointTo);
-    }
-    stage.batchDraw();
-    // stage.getStage().scale({ x: radio, y: radio });
-
-  };
-
   fitView = () => {
     const stage = this.getStage();
     const { width, height } = this.state.dimensions;
@@ -308,7 +270,7 @@ export class Dag extends React.Component<Props, State> {
       skipTransform: true,
     });
     const radio = Math.min(width / stageWidth, height / stageHeight);
-    console.log(radio, width, height, 'stage', stageWidth, stageHeight);
+    // console.log(radio, width, height, 'stage', stageWidth, stageHeight);
     if (radio < 1) {
       stage.getStage().scale({ x: radio, y: radio });
       const mousePointTo = {
@@ -378,7 +340,7 @@ export class Dag extends React.Component<Props, State> {
               width={dimensions.width}
               height={dimensions.height}
               onClick={(evt) => {
-                console.log(evt);
+                // console.log(evt);
                 evt.evt.button === 0 && this.props.onStageClick && this.props.onStageClick(evt);
               }}
               dragBoundFunc={function (pos) {
