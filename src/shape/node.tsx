@@ -120,7 +120,7 @@ export const DagNode: React.FC<{
       <Rect
         onClick={(e) => {
           e.cancelBubble = true;
-          onClick && onClick(e, node);
+          if (e.evt.button === 0) onClick && onClick(e, node);
         }}
         cornerRadius={getTheme().nodeBorderRadio}
         fill={getTheme(`${node.$state$}Bg`)}
