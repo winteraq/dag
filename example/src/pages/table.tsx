@@ -1,9 +1,9 @@
 import * as React from 'react';
 import IndexLayout from '../layouts';
 import { Dag } from '@library';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { css } from '@emotion/core';
-import { useState } from 'react';
+
 const nodes = [
   {
     id: '1',
@@ -47,7 +47,6 @@ const edges = [
   },
 ];
 
-
 const IndexPage = () => {
   const dag = useRef<Dag>(null);
   const [activeNode, setActiveNode] = useState<{ id: string; columnId?: string } | undefined>({
@@ -67,8 +66,8 @@ const IndexPage = () => {
         searchKey={'eve'}
         primaryNode={{ id: '0' }}
         activeNode={activeNode}
-        onNodeContextMenu={() => {
-          console.log('node context menu');
+        onNodeContextMenu={(evt, node, pos) => {
+          console.log('node context menu', evt, pos);
         }}
         onNodeClick={(e, node, column) => {
           console.log('node click', e, node, column);

@@ -94,7 +94,7 @@ export const DagNode: React.FC<{
                     height={getTheme().nodeHeight}
                     onClick={(e) => {
                       e.cancelBubble = true;
-                      onClick && onClick(e, node, col);
+                      if (e.evt.button === 0) onClick && onClick(e, node, col);
                     }}
                     onMouseEnter={(e) => {
                       e.target.setAttr('opacity', 1);

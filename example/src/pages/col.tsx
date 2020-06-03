@@ -282,7 +282,27 @@ const IndexPage = () => {
   const onNodeOutHover = useCallback(() => {
     setHoverInfo(null);
   }, []);
-  console.log('hoverInfo', hoverInfo);
+
+  //右键节点返回的相关信息
+  const [contextMenuInfo, setContextMenuInfo] = useState<{
+    scale: number;
+    left: number;
+    top: number;
+    text: string;
+  } | null>(null);
+
+  //右键点击事件
+  const onNodeContextMenu = useCallback((e, node, pos, stage) => {
+    e.cancelBubble = true;
+    e.evt.preventDefault();
+    const scale = stage.scaleX();
+    setContextMenuInfo({
+      text: node.label,
+      scale,
+      left: pos.x + node.width * scale,
+      top: pos.y + node.height * scale,
+    });
+  }, []);
   return (
     <IndexLayout>
       <Dag
@@ -301,6 +321,7 @@ const IndexPage = () => {
         }}
         onNodeHover={onNodeHover}
         onNodeOutHover={onNodeOutHover}
+        onNodeContextMenu={onNodeContextMenu}
         onNodeClick={(e, node, column) => {
           console.log(e, node, column);
           if (node.id === activeNode?.id) {
