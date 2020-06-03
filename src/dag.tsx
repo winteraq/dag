@@ -375,13 +375,20 @@ export class Dag extends React.Component<Props, State> {
                     />
                   );
                 })}
-                {this.graph.edges().map((e) => {
-                  const edge = this.graph.edge(e);
-                  const startNode = this.graph.node(e.v);
-                  const endNode = this.graph.node(e.w);
+                {_.orderBy(
+                  this.graph.edges().map((e) => ({ ...e, ...this.graph.edge(e) })),
+                  ['$state$'],
+                  ['desc']
+                ).map((e) => {
+                  const edge = e; // this.graph.edge(e);
+                  // @ts-ignore
+                  const startNode = this.graph.node(e.start);
+                  // @ts-ignore
+                  const endNode = this.graph.node(e.end);
                   return (
                     <DagEdge
-                      key={e.v + e.w + e.name}
+                      // @ts-ignore
+                      key={e.start + e.end + e.name}
                       type={this.props.type!}
                       startNode={startNode}
                       endNode={endNode}
