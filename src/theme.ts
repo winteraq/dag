@@ -38,7 +38,7 @@ let _theme = {
   hoverBg: '#f5f6fa',
   nodeDot: {
     hive: '#33d6cc',
-    clickhouse: '#f5f6fa',
+    clickhouse: '#ffbc0a',
     mysql: '#8a77ed',
     kafka: '#34adf0',
     hdfs: '#5dcd81',
@@ -47,7 +47,9 @@ let _theme = {
     tableau: '#ffbc0a',
     abtest: '#8a77ed',
     redis: '#34adf0',
-    undefined: '#f25c61',
+    unknown: '#f25c61',
+    topic: '#ed55b0',
+    undefined: '#ed55b0',
   },
 };
 
