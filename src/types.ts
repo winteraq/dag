@@ -1,6 +1,5 @@
 import Konva from 'konva';
 import { Node as DNode } from 'dagre';
-import { number } from 'prop-types';
 
 export type Node = {
   id: string;

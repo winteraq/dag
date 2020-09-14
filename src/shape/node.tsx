@@ -53,7 +53,7 @@ export const DagNode: React.FC<{
     : undefined;
   const onColumnMouseEnter = onColumnHover
     ? useCallback(
-        (e, col, index) => {
+        (_, col, index) => {
           if (!columnOnHover.current) {
             onColumnHover &&
               onColumnHover(
@@ -71,7 +71,7 @@ export const DagNode: React.FC<{
     : undefined;
   const onMouseLeave = onOutHover
     ? useCallback(
-        (e) => {
+        (_) => {
           if (nodeOnHover.current) {
             onOutHover && onOutHover(node);
           }
