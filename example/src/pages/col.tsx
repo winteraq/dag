@@ -3,6 +3,7 @@ import IndexLayout from '../layouts';
 import { Dag } from '@library';
 import { useState } from 'react';
 import { css } from '@emotion/core';
+import { getTheme } from '../../../src/theme';
 const edges = [
   { start: '17', end: '51', startCol: '33', endCol: '87' },
   { start: '0', end: '3', startCol: '8', endCol: '7' },
@@ -279,6 +280,16 @@ const IndexPage = () => {
       top: pos.y,
     });
   }, []);
+  const onColumnHover = useCallback((node, pos, stage, col, index) => {
+    console.log('===>column', node, pos);
+    const scale = stage.scaleX();
+    setHoverInfo({
+      scale,
+      text: node.columns[index].label,
+      left: pos.x + (node.width / 2) * scale,
+      top: pos.y + getTheme().halfNodeHeight * 2 * (index + 1),
+    });
+  }, []);
   const onNodeOutHover = useCallback(() => {
     setHoverInfo(null);
   }, []);
@@ -320,6 +331,7 @@ const IndexPage = () => {
           setActiveNode(undefined);
         }}
         onNodeHover={onNodeHover}
+        onColumnHover={onColumnHover}
         onNodeOutHover={onNodeOutHover}
         onNodeContextMenu={onNodeContextMenu}
         onNodeClick={(e, node, column) => {

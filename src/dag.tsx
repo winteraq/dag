@@ -32,6 +32,7 @@ type Props = {
   onNodeClick?: onNodeClick;
   onNodeContextMenu?: onNodeContextMenu;
   onNodeHover?: onNodeHover;
+  onColumnHover?:onNodeHover;
   onNodeOutHover?: onNodeOutHover;
   nodeAttr?: NodeAttr;
   onStageClick?: (evt: Konva.KonvaEventObject<MouseEvent>) => void;
@@ -368,6 +369,7 @@ export class Dag extends React.Component<Props, State> {
                       onContextMenu={this.props.onNodeContextMenu}
                       onClick={this.props.onNodeClick}
                       onHover={this.props.onNodeHover}
+                      onColumnHover={this.props.onColumnHover}
                       onOutHover={this.props.onNodeOutHover}
                       activeNode={this.props.activeNode}
                       searchKey={this.props.searchKey}

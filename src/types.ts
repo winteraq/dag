@@ -1,5 +1,6 @@
 import Konva from 'konva';
 import { Node as DNode } from 'dagre';
+import { number } from 'prop-types';
 
 export type Node = {
   id: string;
@@ -34,7 +35,9 @@ export type onNodeContextMenu = (
 export type onNodeHover = (
   node: DNode<Node>,
   pos?: { x: number; y: number },
-  stage?: Konva.Stage
+  stage?: Konva.Stage,
+  col?: DNode<Node>,
+  index?: number
 ) => void;
 export type onNodeOutHover = (node: DNode<Node>) => void;
 export type Point = {
