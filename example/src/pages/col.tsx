@@ -29,7 +29,7 @@ const nodes = [
     task_infos: [],
     columns: [
       { id: '3', label: 'col-b2' },
-      { id: '7', label: 'col-b1' },
+      { id: '7', label: '' },
     ],
     dataset_info: {
       status: null,
@@ -287,7 +287,7 @@ const IndexPage = () => {
       scale,
       text: node.columns[index].label,
       left: pos.x + (node.width / 2) * scale,
-      top: pos.y + getTheme().halfNodeHeight * 2 * (index + 1),
+      top: pos.y + getTheme().halfNodeHeight * 2 * (index + 1) * scale,
     });
   }, []);
   const onNodeOutHover = useCallback(() => {
@@ -348,8 +348,9 @@ const IndexPage = () => {
           });
         }}
       />
-      <div
-        css={css`
+      {hoverInfo?.text && (
+        <div
+          css={css`
           left: ${hoverInfo?.left}px;
           top: ${hoverInfo?.top}px;
           position: absolute;
@@ -361,26 +362,27 @@ const IndexPage = () => {
           //scale(${hoverInfo?.scale})
           transform: translate(-50%, calc(-100% - 5px)) ;
         `}
-      >
-        <div
-          css={css`
-            border: solid transparent;
-            content: '';
-            height: 8px;
-            width: 8px;
-            position: absolute;
-            left: 0;
-            display: block;
-            box-sizing: border-box;
-            transform: rotate(45deg);
-            transform-origin: 50% -50% 0;
-            bottom: -5px;
-            margin-left: 50%;
-            background-color: #282f38;
-          `}
-        />
-        {hoverInfo?.text}
-      </div>
+        >
+          <div
+            css={css`
+              border: solid transparent;
+              content: '';
+              height: 8px;
+              width: 8px;
+              position: absolute;
+              left: 0;
+              display: block;
+              box-sizing: border-box;
+              transform: rotate(45deg);
+              transform-origin: 50% -50% 0;
+              bottom: -5px;
+              margin-left: 50%;
+              background-color: #282f38;
+            `}
+          />
+          {hoverInfo?.text}
+        </div>
+      )}
     </IndexLayout>
   );
 };
